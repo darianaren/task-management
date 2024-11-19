@@ -1,17 +1,12 @@
 import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
-const PORT = 3000;
-
-app.get('/ping', (_req, res) => {
-  const nombre = { i: 0, j: 6 };
-
-  console.log('someone pinged here!!!!', nombre);
-  res.send('pong!');
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+export default app;

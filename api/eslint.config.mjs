@@ -38,6 +38,7 @@ export default [
     ignores: [
       'dist/',
       'build/',
+      '__tests__/',
       'node_modules/',
       'eslint.config.mjs',
       'package-lock.json'
