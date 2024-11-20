@@ -5,6 +5,7 @@ import { Database } from 'sqlite';
 import { authRoutes } from './authRoutes';
 import { userRoutes } from './userRoutes';
 import { taskRoutes } from './taskRoutes';
+import { labelRoutes } from './labelRoutes';
 import authMiddleware from '../middlewares/authMiddleware';
 
 function home(_req: Request, res: Response): void | Response {
@@ -16,7 +17,7 @@ export function initializeRoutes(db: Database): Router {
   router
     .get('/', home as any)
     .use('/auth', authRoutes(db))
-    .use('/labels', authMiddleware as any, userRoutes(db))
+    .use('/labels', authMiddleware as any, labelRoutes(db))
     .use('/users', authMiddleware as any, userRoutes(db))
     .use('/tasks', authMiddleware as any, taskRoutes(db));
 
