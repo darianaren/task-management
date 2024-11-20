@@ -21,27 +21,27 @@ export const SUCCESS = Object.freeze({
 
 export const SUCCESS_RESPONSES = {
   [SUCCESS.OK]: {
-    code: 200,
+    status: 200,
     message: 'Request was successful'
   },
   [SUCCESS.CREATED]: {
-    code: 201,
+    status: 201,
     message: 'Resource created successfully'
   },
   [SUCCESS.ACCEPTED]: {
-    code: 202,
+    status: 202,
     message: 'Request has been accepted for processing'
   },
   [SUCCESS.NO_CONTENT]: {
-    code: 204,
+    status: 204,
     message: 'No content'
   },
   [SUCCESS.RESET_CONTENT]: {
-    code: 205,
+    status: 205,
     message: 'Reset content'
   },
   [SUCCESS.PARTIAL_CONTENT]: {
-    code: 206,
+    status: 206,
     message: 'Partial content delivered'
   }
 };

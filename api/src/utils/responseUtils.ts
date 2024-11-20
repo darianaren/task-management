@@ -15,7 +15,7 @@ export const successResponse = (
   success: ResponseOptions
 ): void | Response => {
   const successDefault = SUCCESS_RESPONSES[SUCCESS.OK];
-  const successStatus = success.code || successDefault.code;
+  const successStatus = success.status || successDefault.status;
 
   return res.status(successStatus).json({
     success: true,
@@ -37,7 +37,7 @@ export const errorResponse = (
   error: ResponseOptions
 ): void | Response => {
   const errorDefault = ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR];
-  const errorStatus = error.code || errorDefault.code;
+  const errorStatus = error.status || errorDefault.status;
 
   return res.status(errorStatus).json({
     success: false,
