@@ -33,43 +33,43 @@ export const ERRORS = Object.freeze({
 
 export const ERROR_RESPONSES = Object.freeze({
   [ERRORS.BAD_REQUEST]: {
-    code: 400,
+    status: 400,
     message: 'Bad Request'
   },
   [ERRORS.UNAUTHORIZED]: {
-    code: 401,
+    status: 401,
     message: 'Unauthorized'
   },
   [ERRORS.FORBIDDEN]: {
-    code: 403,
+    status: 403,
     message: 'Forbidden'
   },
   [ERRORS.NOT_FOUND]: {
-    code: 404,
+    status: 404,
     message: 'Not Found'
   },
   [ERRORS.METHOD_NOT_ALLOWED]: {
-    code: 405,
+    status: 405,
     message: 'Method Not Allowed'
   },
   [ERRORS.CONFLICT]: {
-    code: 409,
+    status: 409,
     message: 'Conflict'
   },
   [ERRORS.INTERNAL_SERVER_ERROR]: {
-    code: 500,
+    status: 500,
     message: 'Internal Server Error'
   },
   [ERRORS.NOT_IMPLEMENTED]: {
-    code: 501,
+    status: 501,
     message: 'Not Implemented'
   },
   [ERRORS.SERVICE_UNAVAILABLE]: {
-    code: 503,
+    status: 503,
     message: 'Service Unavailable'
   },
   [ERRORS.GATEWAY_TIMEOUT]: {
-    code: 504,
+    status: 504,
     message: 'Gateway Timeout'
   }
 });
