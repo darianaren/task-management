@@ -1,22 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router } from 'express';
+import { Database } from 'sqlite';
 
 import { UserModel } from '../models/userModel';
-import { connectDB } from '../config/database';
 import { AuthController } from '../controllers/authController';
 
 const router = Router();
 
-async function initialize() {
-  const db = await connectDB();
+export default router;
+
+export function authRoutes(db: Database): Router {
+  const router = Router();
+
   const userModel = new UserModel(db);
   const authController = new AuthController(userModel);
 
-  router.post('/login', authController.login as any);
+  router.post('/login', authController.login.bind(authController) as any);
+
+  router.post('/register', authController.register.bind(authController) as any);
+
+  return router;
 }
-
-initialize().catch((error) => {
-  console.error('Error initializing the app:', error);
-});
-
-export default router;

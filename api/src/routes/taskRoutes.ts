@@ -1,35 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router } from 'express';
+import { Database } from 'sqlite';
 
-import { connectDB } from '../config/database';
 import { TaskModel } from '../models/taskModel';
-import authMiddleware from '../middlewares/authMiddleware';
 import { TaskController } from '../controllers/taskController';
 
-const router = Router();
+export function taskRoutes(db: Database): Router {
+  const router = Router();
 
-async function initialize() {
-  const db = await connectDB();
   const taskModel = new TaskModel(db);
   const taskController = new TaskController(taskModel);
 
-  router.get('/', authMiddleware as any, taskController.getTasks as any);
+  router.get('/', taskController.getTasks.bind(taskController) as any);
 
-  router.get(
-    '/metrics',
-    authMiddleware as any,
-    taskController.getMetrics as any
-  );
+  router.get('/metrics', taskController.getMetrics.bind(taskController) as any);
 
-  router.post('/', authMiddleware as any, taskController.createTask as any);
+  router.post('/', taskController.createTask.bind(taskController) as any);
 
-  router.put('/', authMiddleware as any, taskController.updateTask as any);
+  router.put('/', taskController.updateTask.bind(taskController) as any);
 
-  router.delete('/', authMiddleware as any, taskController.deleteTask as any);
+  router.delete('/', taskController.deleteTask.bind(taskController) as any);
+
+  return router;
 }
-
-initialize().catch((error) => {
-  console.error('Error initializing the app:', error);
-});
-
-export default router;
