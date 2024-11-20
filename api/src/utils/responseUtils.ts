@@ -20,7 +20,7 @@ export const successResponse = (
   return res.status(successStatus).json({
     success: true,
     data: success.data,
-    code: successStatus,
+    status: successStatus,
     details: success.details,
     message: success.message || successDefault.message
   });
@@ -42,7 +42,7 @@ export const errorResponse = (
   return res.status(errorStatus).json({
     success: false,
     data: error.data,
-    code: errorStatus,
+    status: errorStatus,
     details: error.details,
     message: error.message || errorDefault.message
   });

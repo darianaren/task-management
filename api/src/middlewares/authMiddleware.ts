@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { verifyToken } from '../utils/jwtUtils';
+import { errorResponse } from '../utils/responseUtils';
+import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
 
 /**
  * @function authMiddleware
@@ -28,9 +30,10 @@ const authMiddleware = (
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ message: 'Unauthorized access. Missing token.' });
+    return errorResponse(res, {
+      ...ERROR_RESPONSES[ERRORS.UNAUTHORIZED],
+      details: 'Missing token'
+    });
   }
 
   try {
@@ -41,7 +44,11 @@ const authMiddleware = (
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Invalid token.', error });
+    return errorResponse(res, {
+      ...ERROR_RESPONSES[ERRORS.UNAUTHORIZED],
+      details: 'Invalid token.',
+      data: { error }
+    });
   }
 };
 

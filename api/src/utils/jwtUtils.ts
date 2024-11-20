@@ -1,5 +1,7 @@
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';
 
+import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
+
 const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';
 const TOKEN_EXPIRATION = '5d';
 
@@ -28,10 +30,19 @@ export const generateToken = (
  */
 export const verifyToken = (token: string): JwtPayload | string => {
   try {
+    if (!token)
+      throw {
+        ...ERROR_RESPONSES[ERRORS.UNAUTHORIZED],
+        details: 'Missing token'
+      };
+
     const decoded = jwt.verify(token, SECRET_KEY);
     return decoded;
   } catch (error) {
-    console.log(error);
-    throw new Error('Invalid or expired token');
+    throw {
+      ...ERROR_RESPONSES[ERRORS.UNAUTHORIZED],
+      details: 'Invalid or expired token',
+      data: { error }
+    };
   }
 };
