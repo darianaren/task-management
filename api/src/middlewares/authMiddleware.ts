@@ -29,12 +29,11 @@ const authMiddleware = (
 ): void | Response => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
-  if (!token) {
+  if (!token)
     return errorResponse(res, {
       ...ERROR_RESPONSES[ERRORS.UNAUTHORIZED],
       details: 'Missing token'
     });
-  }
 
   try {
     const decoded = verifyToken(token) as { id: number; email: string };
