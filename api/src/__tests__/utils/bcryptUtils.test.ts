@@ -10,14 +10,14 @@ describe('Bcrypt Utility functions', () => {
   });
 
   describe('hashPassword', () => {
-    test('should return undefined for an empty password', async () => {
+    it('should return undefined for an empty password', async () => {
       const plainPassword = '';
       const result = await hashPassword(plainPassword);
 
       expect(result).toBeUndefined();
     });
 
-    test('should return a hashed password', async () => {
+    it('should return a hashed password', async () => {
       const hashMock = jest.spyOn(bcrypt, 'hash');
       const plainPassword = 'mySecretPassword';
       const hashedPassword = 'hashedPassword';
@@ -33,7 +33,7 @@ describe('Bcrypt Utility functions', () => {
   });
 
   describe('comparePassword', () => {
-    test('should return true if passwords match', async () => {
+    it('should return true if passwords match', async () => {
       const plainPassword = 'mySecretPassword';
       const hashedPassword = (await hashPassword(plainPassword)) || '';
 
@@ -41,7 +41,7 @@ describe('Bcrypt Utility functions', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false if the hashed password is undefined', async () => {
+    it('should return false if the hashed password is undefined', async () => {
       const hashedPassword = undefined;
       const plainPassword = 'mySecretPassword';
       const cloneComparePassword = comparePassword as any;
@@ -51,7 +51,7 @@ describe('Bcrypt Utility functions', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false if the hashed password is incorrect', async () => {
+    it('should return false if the hashed password is incorrect', async () => {
       const hashedPassword = 'invalidPassword';
       const plainPassword = 'mySecretPassword';
 
