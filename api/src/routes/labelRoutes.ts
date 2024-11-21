@@ -4,6 +4,8 @@ import { Database } from 'sqlite';
 
 import { UserModel } from '../models/userModel';
 import { LabelController } from '../controllers/labelController';
+import validateBodyMiddleware from '../middlewares/validateBodyMiddleware';
+import { CREATE_LABEL_VALIDATIONS } from '../constants/validations/label';
 
 const router = Router();
 
@@ -25,7 +27,11 @@ export function labelRoutes(db: Database): Router {
    * @returns {Promise<object>} - A JSON object containing the updated list of labels for the user.
    * @throws {Error} - If an error occurs while adding the label (e.g., if the label already exists).
    */
-  router.post('/', labelController.createLabel.bind(labelController) as any);
+  router.post(
+    '/',
+    validateBodyMiddleware(CREATE_LABEL_VALIDATIONS) as any,
+    labelController.createLabel.bind(labelController) as any
+  );
 
   return router;
 }

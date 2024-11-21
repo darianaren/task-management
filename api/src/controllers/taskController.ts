@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
+
 import { TaskModel } from '../models/taskModel';
+import { errorResponse, successResponse } from '../utils/responseUtils';
+import { SUCCESS, SUCCESS_RESPONSES } from '../constants/sucessResponse';
+import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
 
 /**
  * @class TaskController
@@ -36,10 +40,17 @@ export class TaskController {
         createdAt: new Date().toISOString()
       });
 
-      res.status(201).json(newTask);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.CREATED],
+        data: newTask
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 
@@ -86,10 +97,17 @@ export class TaskController {
         }
       );
 
-      res.json(tasks);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.OK],
+        data: tasks
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 
@@ -109,10 +127,17 @@ export class TaskController {
 
     try {
       await this.taskModel.delete(parseInt(id));
-      res.status(204).send();
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT]
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 
@@ -131,11 +156,18 @@ export class TaskController {
     const { id, ...updateData } = req.body;
 
     try {
-      const updatedTask = await this.taskModel.update(parseInt(id), updateData);
-      res.json(updatedTask);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+      await this.taskModel.update(parseInt(id), updateData);
+
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT]
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 
@@ -156,10 +188,17 @@ export class TaskController {
 
     try {
       const metrics = await this.taskModel.getMetrics(id);
-      res.json(metrics);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.OK],
+        data: metrics
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 }

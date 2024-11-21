@@ -4,6 +4,9 @@ import { UserModel } from '../models/userModel';
 import { generateToken } from '../utils/jwtUtils';
 import { comparePassword } from '../utils/bcryptUtils';
 import { base64ToString } from '../utils/base64Utils';
+import { errorResponse, successResponse } from '../utils/responseUtils';
+import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
+import { SUCCESS, SUCCESS_RESPONSES } from '../constants/sucessResponse';
 
 /**
  * @class AuthController
@@ -35,11 +38,13 @@ export class AuthController {
   async login(req: Request, res: Response): Promise<void | Response> {
     const { email, password } = req.body;
 
-    if (!email) return res.status(400).json({ message: 'Missing email' });
-    if (!password) return res.status(400).json({ message: 'Missing password' });
     try {
       const user = await this.userModel.findByEmail(email);
-      if (!user) return res.status(404).json({ message: 'User not found' });
+      if (!user)
+        return errorResponse(res, {
+          ...ERROR_RESPONSES[ERRORS.NOT_FOUND],
+          details: 'User not found'
+        });
 
       const isPasswordValid = await comparePassword(
         password,
@@ -47,13 +52,24 @@ export class AuthController {
       );
 
       if (!isPasswordValid)
-        return res.status(401).json({ message: 'Unauthorized' });
+        return errorResponse(res, {
+          ...ERROR_RESPONSES[ERRORS.UNAUTHORIZED],
+          details: 'Invalid password'
+        });
 
       const token = generateToken({ id: user.id, email: user.email });
 
-      res.json({ token });
-    } catch (error) {
-      res.status(500).json({ message: 'Internal server error', error });
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.OK],
+        data: { token }
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 
@@ -79,7 +95,10 @@ export class AuthController {
     try {
       const existingUser = await this.userModel.findByEmail(email);
       if (existingUser)
-        return res.status(500).json({ error: 'Email already in use' });
+        return errorResponse(res, {
+          ...ERROR_RESPONSES[ERRORS.CONFLICT],
+          details: 'Email already in use'
+        });
 
       const parsedPassword = base64ToString(password);
 
@@ -89,10 +108,17 @@ export class AuthController {
         password: parsedPassword || ''
       });
 
-      res.status(201).json(newUser);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.CREATED],
+        data: newUser
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 }

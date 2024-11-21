@@ -2,8 +2,13 @@
 import { Router } from 'express';
 import { Database } from 'sqlite';
 
+import {
+  LOGIN_VALIDATIONS,
+  REGISTER_VALIDATIONS
+} from '../constants/validations/auth';
 import { UserModel } from '../models/userModel';
 import { AuthController } from '../controllers/authController';
+import validateBodyMiddleware from '../middlewares/validateBodyMiddleware';
 
 const router = Router();
 
@@ -26,7 +31,11 @@ export function authRoutes(db: Database): Router {
    * @returns {Promise<object>} - A JSON object containing the authentication token.
    * @throws {Error} - If an error occurs during login.
    */
-  router.post('/login', authController.login.bind(authController) as any);
+  router.post(
+    '/login',
+    validateBodyMiddleware(LOGIN_VALIDATIONS) as any,
+    authController.login.bind(authController) as any
+  );
 
   /**
    * Registers a new user and returns the created user's data.
@@ -40,7 +49,11 @@ export function authRoutes(db: Database): Router {
    * @returns {Promise<object>} - A JSON object containing the new user's details and default labels.
    * @throws {Error} - If an error occurs during registration.
    */
-  router.post('/register', authController.register.bind(authController) as any);
+  router.post(
+    '/register',
+    validateBodyMiddleware(REGISTER_VALIDATIONS) as any,
+    authController.register.bind(authController) as any
+  );
 
   return router;
 }
