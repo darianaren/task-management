@@ -31,7 +31,7 @@ export class TaskModel {
    *
    * @throws {Error} Throws an error if there is an issue creating the task in the database.
    */
-  async create(task: Task): Promise<Partial<Task>> {
+  async create(task: Partial<Task>): Promise<Partial<Task>> {
     const result = await this.db.run(
       `INSERT INTO tasks (userId, title, description, dueDate, createdAt, status, labels) 
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
