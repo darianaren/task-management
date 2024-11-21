@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 import { comparePassword, hashPassword } from '../../utils/bcryptUtils';
 
-describe('Utility functions', () => {
+describe('Bcrypt Utility functions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
