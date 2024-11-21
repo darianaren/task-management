@@ -1,6 +1,6 @@
 import { base64ToString, stringToBase64 } from '../../utils/base64Utils';
 
-describe('Utility functions', () => {
+describe('Base64 Utility functions', () => {
   describe('base64ToString', () => {
     it('should decode a Base64 string to plain text', () => {
       const base64 = 'SGVsbG8gd29ybGQ=';
