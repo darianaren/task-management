@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
+
 import { UserModel } from '../models/userModel';
+import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
+import { errorResponse, successResponse } from '../utils/responseUtils';
+import { SUCCESS, SUCCESS_RESPONSES } from '../constants/sucessResponse';
 
 /**
  * @class LabelController
@@ -34,25 +38,33 @@ export class LabelController {
         label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
 
       const user = await this.userModel.findById(id);
+      if (!user)
+        return errorResponse(res, {
+          ...ERROR_RESPONSES[ERRORS.NOT_FOUND],
+          details: 'User not found'
+        });
 
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      if (user.labels.includes(formattedLabel)) {
-        return res.status(400).json({ error: 'Label already exists' });
-      }
+      if (user.labels.includes(formattedLabel))
+        return errorResponse(res, {
+          ...ERROR_RESPONSES[ERRORS.CONFLICT],
+          details: 'Label already exists'
+        });
 
       user.labels.push(formattedLabel);
 
       await this.userModel.update(id, { labels: user.labels });
 
-      res
-        .status(200)
-        .json({ message: 'Label added successfully', labels: user.labels });
-    } catch (error) {
-      console.error('Error creating label:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.CREATED],
+        data: { labels: user.labels }
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 }

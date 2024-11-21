@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
+
 import { UserModel } from '../models/userModel';
+import { errorResponse, successResponse } from '../utils/responseUtils';
+import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
+import { SUCCESS, SUCCESS_RESPONSES } from '../constants/sucessResponse';
 
 /**
  * @class UserController
@@ -34,12 +38,23 @@ export class UserController {
 
     try {
       const user = await this.userModel.findById(parseInt(id));
-      if (!user) return res.status(404).json({ error: 'User not found' });
+      if (!user)
+        return errorResponse(res, {
+          ...ERROR_RESPONSES[ERRORS.NOT_FOUND],
+          details: 'User not found'
+        });
 
-      res.json({ name: user.name, labels: user.labels });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Internal server error' });
+      return successResponse(res, {
+        ...SUCCESS_RESPONSES[SUCCESS.OK],
+        data: { name: user.name, labels: user.labels }
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: Error | any | unknown) {
+      return errorResponse(res, {
+        ...ERROR_RESPONSES[ERRORS.INTERNAL_SERVER_ERROR],
+        details: error?.message
+      });
     }
   }
 }
