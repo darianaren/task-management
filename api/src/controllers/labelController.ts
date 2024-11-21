@@ -28,14 +28,8 @@ export class LabelController {
   async createLabel(req: Request, res: Response): Promise<void | Response> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id } = (req as any).user;
-    const { label } = req.body as { label?: string };
+    const { label } = req.body as { label: string };
     try {
-      if (!label || label.trim().length === 0) {
-        return res
-          .status(400)
-          .json({ error: 'Label is required and cannot be empty.' });
-      }
-
       const formattedLabel =
         label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
 

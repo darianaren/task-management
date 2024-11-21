@@ -4,6 +4,12 @@ import { Database } from 'sqlite';
 
 import { TaskModel } from '../models/taskModel';
 import { TaskController } from '../controllers/taskController';
+import validateBodyMiddleware from '../middlewares/validateBodyMiddleware';
+import {
+  CREATE_TASK_VALIDATIONS,
+  DELETE_TASK_VALIDATIONS,
+  UPDATE_TASK_VALIDATIONS
+} from '../constants/validations/task';
 
 export function taskRoutes(db: Database): Router {
   const router = Router();
@@ -58,7 +64,11 @@ export function taskRoutes(db: Database): Router {
    * @returns {Promise<object>} - A JSON object containing the newly created task, including its `id`.
    * @throws {Error} - If an error occurs while creating the task.
    */
-  router.post('/', taskController.createTask.bind(taskController) as any);
+  router.post(
+    '/',
+    validateBodyMiddleware(CREATE_TASK_VALIDATIONS) as any,
+    taskController.createTask.bind(taskController) as any
+  );
 
   /**
    * Updates an existing task.
@@ -75,7 +85,11 @@ export function taskRoutes(db: Database): Router {
    * @returns {Promise<object>} - A JSON object containing the updated task.
    * @throws {Error} - If an error occurs while updating the task.
    */
-  router.put('/', taskController.updateTask.bind(taskController) as any);
+  router.put(
+    '/',
+    validateBodyMiddleware(UPDATE_TASK_VALIDATIONS) as any,
+    taskController.updateTask.bind(taskController) as any
+  );
 
   /**
    * Deletes a task by its ID.
@@ -87,7 +101,11 @@ export function taskRoutes(db: Database): Router {
    * @returns {Promise<void>} - A successful response with no content.
    * @throws {Error} - If an error occurs while deleting the task.
    */
-  router.delete('/', taskController.deleteTask.bind(taskController) as any);
+  router.delete(
+    '/',
+    validateBodyMiddleware(DELETE_TASK_VALIDATIONS) as any,
+    taskController.deleteTask.bind(taskController) as any
+  );
 
   return router;
 }

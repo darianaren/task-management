@@ -7,10 +7,10 @@ import { ValidationField } from '../interfaces/IValidateBody';
 /**
  * Middleware to validate and process request body fields based on specified rules.
  *
- * @param {ValidationField[]} fields - Array of validation rules for each field.
+ * @param {ReadonlyArray<ValidationField>} fields - Array of validation rules for each field.
  * @returns {void} Middleware function.
  */
-const validateBody = (fields: ValidationField[]) => {
+const validateBodyMiddleware = (fields: ReadonlyArray<ValidationField>) => {
   return (req: Request, res: Response, next: NextFunction): Response | void => {
     fields.forEach((field: ValidationField) => {
       const { name, required, type, min, max, format, applyMask } = field;
@@ -43,17 +43,31 @@ const validateBody = (fields: ValidationField[]) => {
             });
         }
 
-        if (min && value < min)
-          return errorResponse(res, {
-            ...ERROR_RESPONSES[ERRORS.BAD_REQUEST],
-            details: `The field ${name} must be at least ${min}.`
-          });
+        if (min) {
+          if (typeof value === 'number' && value < min)
+            return errorResponse(res, {
+              ...ERROR_RESPONSES[ERRORS.BAD_REQUEST],
+              details: `The field ${name} must be at least ${min}.`
+            });
+          if (value.length < min)
+            return errorResponse(res, {
+              ...ERROR_RESPONSES[ERRORS.BAD_REQUEST],
+              details: `The field size of ${name} must be at least ${min}.`
+            });
+        }
 
-        if (max && value > max)
-          return errorResponse(res, {
-            ...ERROR_RESPONSES[ERRORS.BAD_REQUEST],
-            details: `The field ${name} must not exceed ${max}.`
-          });
+        if (max) {
+          if (typeof value === 'number' && value > max)
+            return errorResponse(res, {
+              ...ERROR_RESPONSES[ERRORS.BAD_REQUEST],
+              details: `The field ${name} must not exceed ${max}.`
+            });
+          if (value.length > max)
+            return errorResponse(res, {
+              ...ERROR_RESPONSES[ERRORS.BAD_REQUEST],
+              details: `The field size of ${name} must not exceed ${max}.`
+            });
+        }
 
         // Apply mask
         if (applyMask) {
@@ -68,4 +82,4 @@ const validateBody = (fields: ValidationField[]) => {
   };
 };
 
-export default validateBody;
+export default validateBodyMiddleware;

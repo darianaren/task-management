@@ -35,8 +35,6 @@ export class AuthController {
   async login(req: Request, res: Response): Promise<void | Response> {
     const { email, password } = req.body;
 
-    if (!email) return res.status(400).json({ message: 'Missing email' });
-    if (!password) return res.status(400).json({ message: 'Missing password' });
     try {
       const user = await this.userModel.findByEmail(email);
       if (!user) return res.status(404).json({ message: 'User not found' });
