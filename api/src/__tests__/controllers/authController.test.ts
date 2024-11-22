@@ -6,15 +6,14 @@ import { comparePassword } from '../../utils/bcryptUtils';
 import { AuthController } from '../../controllers/authController';
 import { ERROR_RESPONSES, ERRORS } from '../../constants/errorResponses';
 import { SUCCESS, SUCCESS_RESPONSES } from '../../constants/sucessResponse';
-import { base64ToString } from '../../utils/base64Utils';
 
 jest.mock('../../utils/jwtUtils');
 jest.mock('../../utils/bcryptUtils');
-jest.mock('../../utils/base64Utils');
 
 describe('AuthController', () => {
   let authController: AuthController;
   let mockUserModel: jest.Mocked<UserModel>;
+
   const mockRes: Partial<Response> = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn()
@@ -121,7 +120,6 @@ describe('AuthController', () => {
 
     it('should create a new user and return success response', async () => {
       mockUserModel.findByEmail.mockResolvedValue(null);
-      (base64ToString as jest.Mock).mockReturnValue('parsedPassword');
       mockUserModel.create.mockResolvedValue({
         id: userTest.id,
         name: userTest.name,
