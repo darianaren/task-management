@@ -5,8 +5,12 @@ import bcrypt from 'bcrypt';
  * @param password - The plain text password to hash.
  * @returns A promise that resolves to the hashed password.
  */
-export const hashPassword = async (password: string): Promise<string> => {
-  const saltRounds = 10; // Adjust as needed for security vs performance
+export const hashPassword = async (
+  password: string
+): Promise<string | undefined> => {
+  if (!password) return undefined;
+
+  const saltRounds = 10;
   const hash = await bcrypt.hash(password, saltRounds);
   return hash;
 };
@@ -21,6 +25,7 @@ export const comparePassword = async (
   password: string,
   hash: string
 ): Promise<boolean> => {
+  if (!password || !hash) return false;
   const match = await bcrypt.compare(password, hash);
   return match;
 };
