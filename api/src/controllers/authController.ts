@@ -3,9 +3,8 @@ import { Request, Response } from 'express';
 import { UserModel } from '../models/userModel';
 import { generateToken } from '../utils/jwtUtils';
 import { comparePassword } from '../utils/bcryptUtils';
-import { base64ToString } from '../utils/base64Utils';
-import { errorResponse, successResponse } from '../utils/responseUtils';
 import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
+import { errorResponse, successResponse } from '../utils/responseUtils';
 import { SUCCESS, SUCCESS_RESPONSES } from '../constants/sucessResponse';
 
 /**
@@ -90,7 +89,7 @@ export class AuthController {
    * @throws {Error} - If an unexpected error occurs during the user creation process.
    */
   async register(req: Request, res: Response): Promise<void | Response> {
-    const { name, email, password } = req.body;
+    const { email } = req.body;
 
     try {
       const existingUser = await this.userModel.findByEmail(email);
@@ -100,13 +99,7 @@ export class AuthController {
           details: 'Email already in use'
         });
 
-      const parsedPassword = base64ToString(password);
-
-      const newUser = await this.userModel.create({
-        name,
-        email,
-        password: parsedPassword || ''
-      });
+      const newUser = await this.userModel.create({ ...req.body });
 
       return successResponse(res, {
         ...SUCCESS_RESPONSES[SUCCESS.CREATED],
