@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
 import { TaskModel } from '../models/taskModel';
+import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
 import { errorResponse, successResponse } from '../utils/responseUtils';
 import { SUCCESS, SUCCESS_RESPONSES } from '../constants/sucessResponse';
-import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
 
 /**
  * @class TaskController
