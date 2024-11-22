@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
 import { UserModel } from '../models/userModel';
-import { errorResponse, successResponse } from '../utils/responseUtils';
 import { ERROR_RESPONSES, ERRORS } from '../constants/errorResponses';
+import { errorResponse, successResponse } from '../utils/responseUtils';
 import { SUCCESS, SUCCESS_RESPONSES } from '../constants/sucessResponse';
 
 /**
