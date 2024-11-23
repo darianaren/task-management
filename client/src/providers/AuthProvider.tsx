@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useCallback } from "react";
-
 import { useRouter } from "next/navigation";
 
 import AuthContext from "@/context/AuthContext";
 import { authEndpoints } from "@/utils/endpoints";
+import {
+  AuthProviderProps,
+  LoginFunction,
+  LogoutFunction
+} from "@/interfaces/IAuthProvider";
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }: AuthProviderProps) {
   const { push } = useRouter();
 
   const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
@@ -18,16 +22,14 @@ export function AuthProvider({ children }) {
    * @async
    * @function login
    *
-   * @param {Object} params - The parameters for login.
-   * @param {string} params.email - The email address of the user.
-   * @param {string} params.password - The password of the user.
+   * @param {UserCredentials} userCredentials - The credentials for login.
    *
    * @throws {Error} If either `email` or `password` is missing.
    * @throws {Error} If there is an error during the login process.
    *
    * @returns {Promise<void>} Resolves when the login is successful and the session is set.
    */
-  const login = useCallback(
+  const login: LoginFunction = useCallback(
     async (userCredentials) => {
       if (!userCredentials.email) throw new Error("Missing email");
       if (!userCredentials.password) throw new Error("Missing password");
@@ -38,7 +40,8 @@ export function AuthProvider({ children }) {
         body: userCredentials,
         endpoint: authEndpoints.login
       });
-      console.log(response);
+      console.log(response); //buscar tambien los datos del usuario
+
       // (await import("@/utils/cookies")).setCookie({
       //   name: cookieName,
       //   value: token
@@ -58,7 +61,7 @@ export function AuthProvider({ children }) {
    * @function logout
    * @returns {void}
    */
-  const logout = useCallback(async () => {
+  const logout: LogoutFunction = useCallback(async () => {
     (await import("@/utils/cookies")).deleteCookie(cookieName);
 
     push("/login");

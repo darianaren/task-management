@@ -1,3 +1,7 @@
+import { getCookie } from "@/utils/cookies";
+
+const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
+
 /**
  * A utility function to make HTTP requests using the Fetch API with custom configurations.
  * @function fetchService
@@ -6,22 +10,37 @@
  *
  * @param {Object} options - An object containing the endpoint, body, and headers for the request.
  * @param {string} options.endpoint - The URL of the endpoint to request. This field is required.
- * @param {Object} [options.body=null] - The data to send with the request, applicable for POST, PUT, PATCH, DELETE methods.
- * @param {Object} [options.headers={}] - Any custom headers to include in the request. Defaults to an empty object.
+ * @param {Record<string, any>} [options.body=null] - The data to send with the request, applicable for POST, PUT, PATCH, DELETE methods.
+ * @param {Record<string, string>} [options.headers={}] - Any custom headers to include in the request. Defaults to an empty object.
  *
  * @throws {Error} Will throw an error if the endpoint is missing or if the request fails.
  *
- * @returns {Promise<Object>} - A promise that resolves to the parsed JSON data from the response.
+ * @returns {Promise<T>} - A promise that resolves to the parsed JSON data from the response.
  */
 const fetchService =
-  (method) =>
-  async ({ endpoint, body = null, headers = {} }) => {
-    if (!endpoint) throw new Error("missing endpoint if the request");
+  <T>(method: string) =>
+  async ({
+    ctx,
+    body,
+    endpoint,
+    headers = {}
+  }: {
+    ctx?: object;
+    headers?: object;
+    endpoint: string;
+    body?: object | undefined;
+  }): Promise<T> => {
+    if (!endpoint) {
+      throw new Error("Missing endpoint in the request");
+    }
 
-    const config = {
+    const userToken = getCookie(cookieName, ctx);
+
+    const config: RequestInit = {
       method,
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
         ...headers
       }
     };
@@ -40,6 +59,9 @@ const fetchService =
     return data;
   };
 
+/**
+ * Collection of HTTP methods with pre-configured fetchService.
+ */
 export const fetchServices = {
   get: fetchService("GET"),
   post: fetchService("POST"),
