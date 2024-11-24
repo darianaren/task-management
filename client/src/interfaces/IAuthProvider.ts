@@ -1,5 +1,39 @@
 import { ReactNode } from "react";
 
+export interface RegisterResponse {
+  data: {
+    id: number;
+    name: string;
+    email: string;
+    labels: Array<string>;
+  };
+  status: number;
+  message: string;
+  details: string;
+  success: boolean;
+}
+
+export interface LoginResponse {
+  data: {
+    token: string;
+  };
+  status: number;
+  message: string;
+  details: string;
+  success: boolean;
+}
+
+export interface GetUserResponse {
+  data: {
+    name: string;
+    labels: Array<string>;
+  };
+  status: number;
+  message: string;
+  details: string;
+  success: boolean;
+}
+
 export interface UserCredentials {
   email: string;
   password: string;

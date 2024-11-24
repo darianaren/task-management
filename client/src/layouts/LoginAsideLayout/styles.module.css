@@ -1,0 +1,28 @@
+.aside-container {
+  position: absolute;
+
+  top: 0;
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  text-align: center;
+
+  width: 50vw;
+  height: 100vh;
+  padding: 1rem;
+
+  z-index: 100;
+  background-color: pink;
+  transition: transform 1s ease;
+}
+
+.aside-container.left {
+  transform: translateX(0);
+}
+
+.aside-container.right {
+  transform: translateX(100%);
+}

@@ -130,7 +130,8 @@ describe('UserModel', () => {
         id: mockUser.id,
         name: mockUser.name,
         email: mockUser.email,
-        labels: ['Trabajo', 'Urgente']
+        labels: ['Trabajo', 'Urgente'],
+        passwordHash: 'hashedPassword'
       });
     });
 

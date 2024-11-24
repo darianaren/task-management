@@ -100,7 +100,6 @@ export class UserModel {
     if (!row) return null;
 
     const data = { ...row, labels: JSON.parse(row.labels) };
-    delete data.passwordHash;
 
     return data;
   }

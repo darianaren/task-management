@@ -1,3 +1,5 @@
+import fetch, { RequestInit } from "node-fetch";
+
 import { getCookie } from "@/utils/cookies";
 
 const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
@@ -18,8 +20,8 @@ const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
  * @returns {Promise<T>} - A promise that resolves to the parsed JSON data from the response.
  */
 const fetchService =
-  <T>(method: string) =>
-  async ({
+  (method: string) =>
+  async <T>({
     ctx,
     body,
     endpoint,
@@ -53,7 +55,7 @@ const fetchService =
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Error in the request");
+      throw data;
     }
 
     return data;

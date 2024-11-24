@@ -81,7 +81,7 @@ const validateBodyMiddleware = (fields: ReadonlyArray<ValidationField>) => {
     const hasError = parsedFields.find(({ isValid }) => !isValid);
 
     if (!hasError) {
-      next();
+      return next();
     }
 
     return errorResponse(res, {
