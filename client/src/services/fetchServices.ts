@@ -55,7 +55,7 @@ const fetchService =
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Error in the request");
+      throw data;
     }
 
     return data;
