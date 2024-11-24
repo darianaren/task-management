@@ -20,6 +20,14 @@ function AlertProvider({ children }: AlertProviderProps) {
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState(SEVERITY_ALERT.info);
 
+  /**
+   * Displays an alert with the provided message and severity.
+   *
+   * @function
+   * @name showAlert
+   * @param {string} message - The message to display in the alert.
+   * @param {SEVERITY_ALERT} severity - The severity level of the alert.
+   */
   const showAlert: showAlertFunction = (message, severity) => {
     setMessage(message);
     setSeverity(severity);
