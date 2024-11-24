@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import {
   AuthProviderProps,
+  GetUserFunction,
   GetUserResponse,
   LoginFunction,
   LoginResponse,
@@ -15,12 +16,28 @@ import AuthContext from "@/context/AuthContext";
 import { CustomError } from "@/utils/customError";
 import { stringToBase64 } from "@/utils/base64Utils";
 import { authEndpoints, usersEndpoints } from "@/utils/endpoints";
-import { setItem } from "@/utils/localStorage";
+import { getItem } from "@/utils/localStorage";
 
 function AuthProvider({ children }: AuthProviderProps) {
   const { push } = useRouter();
 
   const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
+
+  /**
+   * Retrieves the user data stored in localStorage.
+   *
+   * @returns {User} The user data if found, or null if no data is present.
+   */
+  const getUser: GetUserFunction = useCallback(() => {
+    const savedUser = getItem("userData", {
+      name: "Usuario",
+      labels: []
+    });
+    if (savedUser?.expired || !savedUser?.value) {
+      return { name: "Usuario", labels: [] };
+    }
+    return savedUser?.value;
+  }, []);
 
   /**
    * Logs in the user with the provided email and password.
@@ -63,7 +80,10 @@ function AuthProvider({ children }: AuthProviderProps) {
           endpoint: usersEndpoints.get
         });
 
-        setItem("userData", userData.data);
+        (await import("@/utils/localStorage")).setItem(
+          "userData",
+          userData.data
+        );
 
         push("/");
       }
@@ -82,12 +102,13 @@ function AuthProvider({ children }: AuthProviderProps) {
    */
   const logout: LogoutFunction = useCallback(async () => {
     (await import("@/utils/cookies")).deleteCookie(cookieName);
+    (await import("@/utils/localStorage")).removeItem("userData");
 
     push("/login");
   }, [cookieName, push]);
 
   return (
-    <AuthContext.Provider value={{ login, logout }}>
+    <AuthContext.Provider value={{ getUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

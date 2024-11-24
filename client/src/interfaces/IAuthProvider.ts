@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
 
+export interface User {
+  name: string;
+  labels: Array<string>;
+}
+
 export interface RegisterResponse {
   data: {
     id: number;
@@ -24,10 +29,7 @@ export interface LoginResponse {
 }
 
 export interface GetUserResponse {
-  data: {
-    name: string;
-    labels: Array<string>;
-  };
+  data: User;
   status: number;
   message: string;
   details: string;
@@ -52,7 +54,12 @@ export interface LogoutFunction {
   (): Promise<void>;
 }
 
+export interface GetUserFunction {
+  (): User;
+}
+
 export interface AuthContextType {
+  getUser: GetUserFunction;
   login: LoginFunction;
   logout: LogoutFunction;
 }

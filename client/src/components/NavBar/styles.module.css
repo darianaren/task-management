@@ -1,0 +1,12 @@
+.icon {
+  margin-left: auto;
+
+  cursor: pointer;
+  filter: invert(84%) sepia(100%) saturate(0%) hue-rotate(12deg)
+    brightness(110%) contrast(101%);
+}
+
+.icon:hover {
+  filter: invert(64%) sepia(98%) saturate(5551%) hue-rotate(338deg)
+    brightness(99%) contrast(92%);
+}
