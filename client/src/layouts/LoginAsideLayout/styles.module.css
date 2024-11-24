@@ -1,0 +1,17 @@
+.aside-container {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 50vw;
+  height: 100vh;
+  padding: 1rem;
+
+  background-color: pink;
+}
