@@ -1,3 +1,5 @@
+import fetch, { RequestInit } from "node-fetch";
+
 import { getCookie } from "@/utils/cookies";
 
 const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
