@@ -1,5 +1,5 @@
 export class CustomError extends Error {
-  details?: string;
+  details: string;
 
   constructor(message: string, details?: string) {
     super(message);
