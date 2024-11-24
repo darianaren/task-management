@@ -10,6 +10,7 @@ export interface AuthProviderProps {
 }
 
 export interface LoginFunction {
+  // eslint-disable-next-line no-unused-vars
   (userCredentials: UserCredentials): Promise<void>;
 }
 
