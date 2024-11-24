@@ -1,11 +1,17 @@
 import { INPUT_MASKS } from "@/constants/inputMasks";
 
 export const INITIAL_STATE_FORM = Object.freeze({
+  name: "",
   email: "",
   password: ""
 });
 
 export const FORM_VALIDATIONS = Object.freeze({
+  name: {
+    required: true,
+    pattern: /^[ A-Za-zÑñÁáÉéÍíÓóÚúÜü]+$/i,
+    message: "El nombre no es válido."
+  },
   email: {
     required: true,
     pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
@@ -18,15 +24,13 @@ export const FORM_VALIDATIONS = Object.freeze({
 });
 
 export const FORM_MASKS = Object.freeze({
+  name: INPUT_MASKS.PASCAL,
   email: INPUT_MASKS.LOWER
 });
 
 export const ERROR_MESSAGES: {
   [key: string]: string;
 } = Object.freeze({
-  "Invalid password": "Contraseña incorrecta",
-  default: "Ha ocurrido un error al iniciar sesión",
-  "Missing password": "Por favor, introduzca una contraseña",
-  "Missing email": "Por favor, introduzca un correo electrónico",
-  "User not found": "Debes registrarte para poder iniciar sesión"
+  default: "Ha ocurrido un error al registarse",
+  "Email already in use": "El correo electrónico ya pertenece a una cuenta."
 });

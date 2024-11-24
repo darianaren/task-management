@@ -6,7 +6,6 @@ import { LAYOUT_DIRECTION_VALUE } from "./constants";
 import { LoginAsideLayoutProps } from "@/interfaces/ILogin";
 
 const LoginAsideLayout: React.FC<LoginAsideLayoutProps> = ({ direction }) => {
-  console.log(direction);
   return (
     <section
       className={`${styles["aside-container"]} ${styles[LAYOUT_DIRECTION_VALUE[direction]]}`}

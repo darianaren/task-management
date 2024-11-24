@@ -14,7 +14,6 @@ import {
 import useForm from "@/hooks/useForm";
 import useAuth from "@/hooks/useAuth";
 import useAlert from "@/hooks/useAlert";
-import { CustomError } from "@/utils/customError";
 import { LoginLayoutProps } from "@/interfaces/ILogin";
 import { SEVERITY_ALERT } from "@/constants/severityAlert";
 
@@ -49,13 +48,12 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ handleRegister }) => {
 
         resetForm();
       } catch (error) {
-        if (error instanceof CustomError) {
-          const message =
-            ERROR_MESSAGES[error.details] || ERROR_MESSAGES.default;
-          showAlert(message, SEVERITY_ALERT.error);
-        } else {
-          showAlert(ERROR_MESSAGES.default, SEVERITY_ALERT.error);
-        }
+        const typedError = error as { details: string };
+
+        const message =
+          ERROR_MESSAGES[typedError.details] || ERROR_MESSAGES.default;
+
+        showAlert(message, SEVERITY_ALERT.error);
       }
 
       setIsLoading(false);
@@ -96,19 +94,18 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({ handleRegister }) => {
           fullWidth
           color="primary"
           variant="contained"
-          disabled={isLoading}
           onClick={handleSubmit}
+          disabled={!form.email || !form.password || isLoading}
           startIcon={
             isLoading && <CircularProgress size={20} color="inherit" />
           }
         >
           {isLoading ? "Cargando..." : "Ingresar"}
         </Button>
-        <p>
-          ¿Aún no tienes cuenta?{" "}
-          <span onClick={handleRegister}>Registrate</span>
-        </p>
       </form>
+      <p>
+        ¿Aún no tienes cuenta? <span onClick={handleRegister}>Registrate</span>
+      </p>
     </section>
   );
 };
