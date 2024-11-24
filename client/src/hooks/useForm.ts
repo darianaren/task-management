@@ -66,19 +66,22 @@ const useForm = ({
       const rules = validateForm[name] || {};
 
       if (rules.required && !value)
-        return setErrors({ ...errors, [name]: "Este campo es requerido" });
+        return setErrors((prev) => ({
+          ...prev,
+          [name]: "Este campo es requerido"
+        }));
 
       if (rules.customValidator && rules.customValidator(value)) {
         const message = rules.message || "El valor del campo es inválido";
-        return setErrors({ ...errors, [name]: message });
+        return setErrors((prev) => ({ ...prev, [name]: message }));
       }
 
       if (rules.pattern && !rules.pattern.test(value)) {
         const message = rules.message || "El valor del campo es inválido";
-        return setErrors({ ...errors, [name]: message });
+        return setErrors((prev) => ({ ...prev, [name]: message }));
       }
     },
-    [errors, validateForm]
+    [validateForm]
   );
 
   const formValidator: VoidFunction = useCallback(() => {

@@ -6,11 +6,15 @@ import { useRouter } from "next/navigation";
 
 import {
   AuthProviderProps,
+  GetUserResponse,
   LoginFunction,
+  LoginResponse,
   LogoutFunction
 } from "@/interfaces/IAuthProvider";
 import AuthContext from "@/context/AuthContext";
-import { authEndpoints } from "@/utils/endpoints";
+import { CustomError } from "@/utils/customError";
+import { stringToBase64 } from "@/utils/base64Utils";
+import { authEndpoints, usersEndpoints } from "@/utils/endpoints";
 
 function AuthProvider({ children }: AuthProviderProps) {
   const { push } = useRouter();
@@ -31,24 +35,37 @@ function AuthProvider({ children }: AuthProviderProps) {
    * @returns {Promise<void>} Resolves when the login is successful and the session is set.
    */
   const login: LoginFunction = useCallback(
-    async (userCredentials) => {
-      if (!userCredentials.email) throw new Error("Missing email");
-      if (!userCredentials.password) throw new Error("Missing password");
+    async ({ email, password }) => {
+      if (!email) throw new CustomError("Missing email");
+
+      if (!password) throw new CustomError("Missing password");
 
       const response = await (
         await import("@/services/fetchServices")
-      ).fetchServices.post({
-        body: userCredentials,
+      ).fetchServices.post<LoginResponse>({
+        body: { email, password: stringToBase64(password) },
         endpoint: authEndpoints.login
       });
-      console.log(response); // buscar tambien los datos del usuario
+      console.log(response);
 
-      // (await import("@/utils/cookies")).setCookie({
-      //   name: cookieName,
-      //   value: token
-      // });
+      if (response.success) {
+        const userToken = response.data?.token;
 
-      // push("/");
+        (await import("@/utils/cookies")).setCookie({
+          name: cookieName,
+          value: userToken
+        });
+
+        const userData = await (
+          await import("@/services/fetchServices")
+        ).fetchServices.post<GetUserResponse>({
+          headers: { Authorization: `Bearer ${userToken}` },
+          endpoint: usersEndpoints.get
+        });
+        console.log(userData);
+
+        push("/");
+      }
     },
     [cookieName, push]
   );

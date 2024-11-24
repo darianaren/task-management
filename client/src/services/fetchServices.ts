@@ -20,8 +20,8 @@ const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
  * @returns {Promise<T>} - A promise that resolves to the parsed JSON data from the response.
  */
 const fetchService =
-  <T>(method: string) =>
-  async ({
+  (method: string) =>
+  async <T>({
     ctx,
     body,
     endpoint,
