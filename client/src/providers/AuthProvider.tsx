@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useCallback } from "react";
+
 import { useRouter } from "next/navigation";
 
-import AuthContext from "@/context/AuthContext";
-import { authEndpoints } from "@/utils/endpoints";
 import {
   AuthProviderProps,
   LoginFunction,
   LogoutFunction
 } from "@/interfaces/IAuthProvider";
+import AuthContext from "@/context/AuthContext";
+import { authEndpoints } from "@/utils/endpoints";
 
-export function AuthProvider({ children }: AuthProviderProps) {
+function AuthProvider({ children }: AuthProviderProps) {
   const { push } = useRouter();
 
   const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
@@ -40,7 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         body: userCredentials,
         endpoint: authEndpoints.login
       });
-      console.log(response); //buscar tambien los datos del usuario
+      console.log(response); // buscar tambien los datos del usuario
 
       // (await import("@/utils/cookies")).setCookie({
       //   name: cookieName,

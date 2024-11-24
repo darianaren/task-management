@@ -1,8 +1,8 @@
 import React from "react";
-
 import type { Metadata } from "next";
 
 import AuthProvider from "@/providers/AuthProvider";
+import AlertProvider from "@/providers/AlertProvider";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -21,9 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-        <body>{children}</body>
-      </AuthProvider>
+      <body>
+        <AuthProvider>
+          <AlertProvider>{children}</AlertProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }
