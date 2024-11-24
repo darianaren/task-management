@@ -15,6 +15,7 @@ import AuthContext from "@/context/AuthContext";
 import { CustomError } from "@/utils/customError";
 import { stringToBase64 } from "@/utils/base64Utils";
 import { authEndpoints, usersEndpoints } from "@/utils/endpoints";
+import { setItem } from "@/utils/localStorage";
 
 function AuthProvider({ children }: AuthProviderProps) {
   const { push } = useRouter();
@@ -46,7 +47,6 @@ function AuthProvider({ children }: AuthProviderProps) {
         body: { email, password: stringToBase64(password) },
         endpoint: authEndpoints.login
       });
-      console.log(response);
 
       if (response.success) {
         const userToken = response.data?.token;
@@ -58,11 +58,12 @@ function AuthProvider({ children }: AuthProviderProps) {
 
         const userData = await (
           await import("@/services/fetchServices")
-        ).fetchServices.post<GetUserResponse>({
+        ).fetchServices.get<GetUserResponse>({
           headers: { Authorization: `Bearer ${userToken}` },
           endpoint: usersEndpoints.get
         });
-        console.log(userData);
+
+        setItem("userData", userData.data);
 
         push("/");
       }
