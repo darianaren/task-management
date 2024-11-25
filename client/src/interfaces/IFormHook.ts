@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+import { SelectChangeEvent } from "@mui/material";
 import React from "react";
 
 interface CustomValidator {
@@ -12,6 +13,10 @@ export interface VoidFunction {
 
 export interface ChangeFunction {
   (event: React.ChangeEvent<HTMLInputElement>): void;
+}
+
+export interface ChangeSelectFunction {
+  (event: SelectChangeEvent<string>): void;
 }
 
 export interface BlurFunction {

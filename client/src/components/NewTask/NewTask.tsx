@@ -13,12 +13,14 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TextField
 } from "@mui/material";
 
 import styles from "./styles.module.css";
 
 import { NewTaskProps, Task } from "@/interfaces/ITask";
+import { ChangeSelectFunction } from "@/interfaces/IFormHook";
 
 const NewTask: React.FC<NewTaskProps> = ({
   isLoading,
@@ -27,21 +29,33 @@ const NewTask: React.FC<NewTaskProps> = ({
   handleAddTask,
   handleAddLabel
 }) => {
-  const [labels, setLabels] = useState<string[]>([]);
+  const [labels, setLabels] = useState<Array<string>>([]);
 
   const { form, errors, resetForm, handleChange, blurValidator } = newTaskForm;
 
-  const handleSelect = (event) => {
-    const newLabels = event.target.value.filter((value) => value);
+  /**
+   * Handles the selection of labels, ensuring no empty values are included.
+   * @param event - The change event from the label selection.
+   */
+  const handleSelect = (event: SelectChangeEvent<string[]>): void => {
+    const newLabels = (event.target.value as Array<string>).filter(
+      (value: string | undefined) => value
+    );
 
-    if (newLabels.length !== labels.length) setLabels(event.target.value);
+    if (newLabels.length !== labels.length) setLabels(newLabels);
   };
 
-  const addLabel = async () => {
-    const response = await handleAddLabel(form.label);
+  /**
+   * Adds a new label to the list and updates the state if successful.
+   * @returns {Promise<void>} Resolves when the label is added.
+   */
+  const addLabel = async (): Promise<void> => {
+    const response: boolean = await handleAddLabel(form.label);
 
     if (response) {
-      handleChange({ target: { name: "label", value: "" } });
+      handleChange({
+        target: { name: "label", value: "" } as EventTarget & HTMLInputElement
+      } as React.ChangeEvent<HTMLInputElement>);
 
       setLabels((prevLabels) => {
         if (!prevLabels.length) {
@@ -57,7 +71,14 @@ const NewTask: React.FC<NewTaskProps> = ({
     }
   };
 
-  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  /**
+   * Submits the form data, creating a new task if successful.
+   * @param event - The button click event triggering the submission.
+   * @returns {Promise<void>} Resolves when the task is created.
+   */
+  const handleSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
     event.preventDefault();
 
     const response = await handleAddTask({
@@ -83,7 +104,7 @@ const NewTask: React.FC<NewTaskProps> = ({
           label="Estado"
           value={form.status}
           id="demo-simple-select"
-          onChange={handleChange}
+          onChange={handleChange as ChangeSelectFunction}
           labelId="simple-select-status"
           sx={{ maxHeight: "50vh" }}
         >
@@ -100,7 +121,7 @@ const NewTask: React.FC<NewTaskProps> = ({
           label="Etiquetas"
           onChange={handleSelect}
           labelId="multiple-select-labels"
-          renderValue={(selected) => (selected as string[]).join(", ")}
+          renderValue={(selected: Array<string>) => selected.join(", ")}
         >
           <section className={styles["new-label-section"]}>
             <TextField
