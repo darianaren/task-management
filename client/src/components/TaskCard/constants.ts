@@ -1,5 +1,5 @@
 export const STATUS_AVATAR = Object.freeze({
-  completed: "✅",
   pending: "⏳",
+  completed: "✅",
   "in-progress": "💼"
 });

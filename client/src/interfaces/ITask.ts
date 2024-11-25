@@ -1,16 +1,20 @@
+/* eslint-disable no-unused-vars */
 import { UseFormReturn } from "./IFormHook";
 import { AddLabelFunction } from "./ILabel";
 
+type Status = "pending" | "completed" | "in-progress";
+
 export interface Task {
+  id: number;
   title: string;
+  status: Status;
   dueDate: string;
   labels: string[];
   description: string;
-  status: "pending" | "completed" | "in-progress";
 }
 
 export interface TaskResponse {
-  data: Task;
+  data: Array<Task>;
   status: number;
   message: string;
   details?: string;
@@ -18,8 +22,15 @@ export interface TaskResponse {
 }
 
 export interface AddTaskFunction {
-  // eslint-disable-next-line no-unused-vars
   (task: Task): Promise<boolean>;
+}
+
+export interface UpdateTaskFunction {
+  (taskId: number, status: Status): Promise<void>;
+}
+
+export interface DeleteTaskFunction {
+  (taskId: number): Promise<void>;
 }
 
 export interface NewTaskProps {
@@ -28,4 +39,23 @@ export interface NewTaskProps {
   labelOptions: Array<string>;
   handleAddTask: AddTaskFunction;
   handleAddLabel: AddLabelFunction;
+}
+
+export interface TaskCardProps {
+  title?: string;
+  status?: Status;
+  dueDate?: string;
+  description?: string;
+  labels?: Array<string>;
+  handleRemove: () => void;
+  handleUpdate: (status: Status) => void;
+}
+
+export interface TaskListProps {
+  tasks: Array<Task> | [];
+  page: number;
+  isLoading: boolean;
+  setPage: AddTaskFunction;
+  handleUpdateTask: UpdateTaskFunction;
+  handleDeleteTask: DeleteTaskFunction;
 }

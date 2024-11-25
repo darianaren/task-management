@@ -24,7 +24,13 @@ import { fetcher } from "@/utils/swrFetcher";
 import { LogoutFunction } from "@/interfaces/INavBar";
 import { MetricsResponse } from "@/interfaces/IMetrics";
 import { ChangeFunction } from "@/interfaces/IFormHook";
-import { AddTaskFunction, Task, TaskResponse } from "@/interfaces/ITask";
+import {
+  AddTaskFunction,
+  DeleteTaskFunction,
+  Task,
+  TaskResponse,
+  UpdateTaskFunction
+} from "@/interfaces/ITask";
 import { SEVERITY_ALERT } from "@/constants/severityAlert";
 import { labelsEndpoints, tasksEndpoints } from "@/utils/endpoints";
 import { AddLabelFunction, LabelResponse } from "@/interfaces/ILabel";
@@ -47,8 +53,10 @@ export default function Home() {
     initialForm: INITIAL_STATE_FORM
   });
 
+  const taskEndpoint =
+    tasksEndpoints.get + createQueryString(state as QueryStringParams);
   const { data: tasksData, isLoading: tasksLoading } = useSWR<TaskResponse>(
-    tasksEndpoints.get + createQueryString(state as QueryStringParams),
+    taskEndpoint,
     fetcher,
     {
       onError: () =>
@@ -151,7 +159,7 @@ export default function Home() {
           showAlert("Se ha añadido una nueva tarea", SEVERITY_ALERT.success);
 
           await Promise.all([
-            mutate(tasksEndpoints.get),
+            mutate(taskEndpoint),
             mutate(tasksEndpoints.metrics)
           ]);
 
@@ -167,7 +175,7 @@ export default function Home() {
       setIsLoading(false);
       return false;
     },
-    [showAlert]
+    [taskEndpoint, showAlert]
   );
 
   // const handleSearch: ChangeFunction = useCallback((event) => {
@@ -177,6 +185,12 @@ export default function Home() {
 
   // const handleResetFilters = useCallback(() => dispatch(clearFilters()), []);
 
+  /**
+   * Applies the filters received and dispatches the corresponding action.
+   *
+   * @param payload Object that contains the filters to apply, where the keys are the field names
+   * and the values are the values to filter.
+   */
   const handleApplyFilters = useCallback((payload) => {
     const filters = {};
 
@@ -187,21 +201,27 @@ export default function Home() {
     dispatch(applyFilters(filters));
   }, []);
 
-  const handleDeleteTask = useCallback(
-    async (taskId) => {
+  /**
+   * Update the status of a specific task.
+   *
+   * @param taskId The identifier of the task to delete.
+   * @param status New status of the task.
+   */
+  const handleUpdateTask: UpdateTaskFunction = useCallback(
+    async (taskId, status) => {
       setIsLoading(true);
       try {
         const response = await (
           await import("@/services/fetchServices")
-        ).fetchServices.post({
-          body: { id: taskId },
-          endpoint: tasksEndpoints.remove
+        ).fetchServices.put<TaskResponse>({
+          body: { id: taskId, status },
+          endpoint: tasksEndpoints.update
         });
 
         if (response.success) {
           await Promise.all([
-            mutate(tasksEndpoints.metrics),
-            mutate(tasksEndpoints.get)
+            mutate(taskEndpoint),
+            mutate(tasksEndpoints.metrics)
           ]);
         }
       } catch (error) {
@@ -212,10 +232,42 @@ export default function Home() {
       }
       setIsLoading(false);
     },
-    [showAlert]
+    [taskEndpoint, showAlert]
   );
 
-  // console.log(tasksData?.data);
+  /**
+   * Deletes a specific task.
+   *
+   * @param taskId The identifier of the task to delete.
+   */
+  const handleDeleteTask: DeleteTaskFunction = useCallback(
+    async (taskId) => {
+      setIsLoading(true);
+      try {
+        const response = await (
+          await import("@/services/fetchServices")
+        ).fetchServices.remove<TaskResponse>({
+          body: { id: taskId },
+          endpoint: tasksEndpoints.remove
+        });
+
+        if (response.success) {
+          await Promise.all([
+            mutate(taskEndpoint),
+            mutate(tasksEndpoints.metrics)
+          ]);
+        }
+      } catch (error) {
+        showAlert(
+          "Ha ocurrido un error al intentar eliminar la tarea",
+          SEVERITY_ALERT.error
+        );
+      }
+      setIsLoading(false);
+    },
+    [taskEndpoint, showAlert]
+  );
+
   return (
     <section>
       <NavBar user={user} handleLogout={handleLogout} />
@@ -230,7 +282,7 @@ export default function Home() {
         <div className={styles["tasks-container"]}>
           <Metrics {...(metricsData?.data || {})} isLoading={metricsLoading} />
           <Filter
-            search={state.value}
+            search={state.title}
             labelOptions={user.labels}
             // handleSearch={handleSearch}
             // handleApplyFilters={handleApplyFilters}
@@ -241,6 +293,7 @@ export default function Home() {
             isLoading={tasksLoading}
             setPage={handleApplyFilters}
             tasks={tasksData?.data || []}
+            handleUpdateTask={handleUpdateTask}
             handleDeleteTask={handleDeleteTask}
           />
         </div>
