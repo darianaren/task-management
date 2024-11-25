@@ -118,7 +118,9 @@ export class UserModel {
       .map((key) => `${key} = ?`)
       .join(', ');
 
-    const values = Object.values(updates);
+    const values = Object.values(updates).map((value) =>
+      Array.isArray(value) ? JSON.stringify(value) : value
+    );
 
     await this.db.run(`UPDATE users SET ${fields} WHERE id = ?`, [
       ...values,

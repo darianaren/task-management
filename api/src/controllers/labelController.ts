@@ -33,10 +33,8 @@ export class LabelController {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id } = (req as any).user;
     const { label } = req.body as { label: string };
-    try {
-      const formattedLabel =
-        label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
 
+    try {
       const user = await this.userModel.findById(id);
       if (!user)
         return errorResponse(res, {
@@ -44,13 +42,13 @@ export class LabelController {
           details: 'User not found'
         });
 
-      if (user.labels.includes(formattedLabel))
+      if (user.labels.includes(label))
         return errorResponse(res, {
           ...ERROR_RESPONSES[ERRORS.CONFLICT],
           details: 'Label already exists'
         });
 
-      user.labels.push(formattedLabel);
+      user.labels.push(label);
 
       await this.userModel.update(id, { labels: user.labels });
 
