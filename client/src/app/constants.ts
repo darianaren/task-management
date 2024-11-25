@@ -12,6 +12,7 @@ export const INITIAL_STATE_REDUCER = Object.freeze({
 });
 
 export const ACTIONS_TYPES = Object.freeze({
+  SET_PAGE: Symbol("Set page value"),
   SET_SEARCH: Symbol("Set title value"),
   CLEAR_FILTERS: Symbol("Reset filters"),
   APPLY_FILTERS: Symbol("Apply filters"),

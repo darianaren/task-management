@@ -15,7 +15,13 @@ import {
 import { reducer } from "./reducer";
 import styles from "./styles.module.css";
 import { createQueryString, QueryStringParams } from "./utils";
-import { applyFilters, clearFilters, setLoading, setSearch } from "./actions";
+import {
+  applyFilters,
+  clearFilters,
+  setLoading,
+  setPage,
+  setSearch
+} from "./actions";
 
 import useAuth from "@/hooks/useAuth";
 import useForm from "@/hooks/useForm";
@@ -27,6 +33,7 @@ import { ChangeFunction } from "@/interfaces/IFormHook";
 import {
   AddTaskFunction,
   DeleteTaskFunction,
+  SetPageFunction,
   Task,
   TaskResponse,
   UpdateTaskFunction
@@ -191,14 +198,25 @@ export default function Home() {
    * @param payload Object that contains the filters to apply, where the keys are the field names
    * and the values are the values to filter.
    */
-  const handleApplyFilters = useCallback((payload) => {
-    const filters = {};
+  // const handleApplyFilters = useCallback((payload) => {
+  //   const filters = {};
 
-    Object.entries(payload).forEach(([field, value]) => {
-      if (value) filters[field] = value;
-    });
+  //   Object.entries(payload).forEach(([field, value]) => {
+  //     if (value) filters[field] = value;
+  //   });
 
-    dispatch(applyFilters(filters));
+  //   dispatch(applyFilters(filters));
+  // }, []);
+
+  /**
+   * Set page value.
+   *
+   * @param {number} page Current number page.
+   * @returns {void}
+   */
+
+  const handleSetPage: SetPageFunction = useCallback((page) => {
+    dispatch(setPage(page));
   }, []);
 
   /**
@@ -291,10 +309,11 @@ export default function Home() {
           <List
             page={state.page}
             isLoading={tasksLoading}
-            setPage={handleApplyFilters}
-            tasks={tasksData?.data || []}
+            setPage={handleSetPage}
+            tasks={tasksData?.data?.tasks || []}
             handleUpdateTask={handleUpdateTask}
             handleDeleteTask={handleDeleteTask}
+            totalPages={tasksData?.data?.totalPages || 0}
           />
         </div>
       </div>

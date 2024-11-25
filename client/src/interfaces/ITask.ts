@@ -14,11 +14,11 @@ export interface Task {
 }
 
 export interface TaskResponse {
-  data: Array<Task>;
   status: number;
   message: string;
   details?: string;
   success: boolean;
+  data: { tasks: Array<Task>; totalPages: number };
 }
 
 export interface AddTaskFunction {
@@ -41,6 +41,10 @@ export interface NewTaskProps {
   handleAddLabel: AddLabelFunction;
 }
 
+export interface SetPageFunction {
+  (page: number): void;
+}
+
 export interface TaskCardProps {
   title?: string;
   status?: Status;
@@ -55,7 +59,8 @@ export interface TaskListProps {
   tasks: Array<Task> | [];
   page: number;
   isLoading: boolean;
-  setPage: AddTaskFunction;
+  totalPages: number;
+  setPage: SetPageFunction;
   handleUpdateTask: UpdateTaskFunction;
   handleDeleteTask: DeleteTaskFunction;
 }

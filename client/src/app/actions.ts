@@ -1,5 +1,14 @@
 import { ACTIONS_TYPES } from "./constants";
 
+interface SetPageAction {
+  type: typeof ACTIONS_TYPES.SET_PAGE;
+  payload: number;
+}
+export const setPage = (payload: number): SetPageAction => ({
+  type: ACTIONS_TYPES.SET_PAGE,
+  payload
+});
+
 interface SetLoadingAction {
   type: typeof ACTIONS_TYPES.SET_LOADING;
   payload: boolean;

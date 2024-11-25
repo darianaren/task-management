@@ -20,6 +20,11 @@ export const reducer = (state: State, action: Action): State => {
   const { type, payload } = action;
 
   switch (type) {
+    case ACTIONS_TYPES.SET_PAGE:
+      return {
+        ...state,
+        page: payload
+      };
     case ACTIONS_TYPES.SET_LOADING:
       return {
         ...state,
