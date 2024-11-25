@@ -6,6 +6,8 @@
   gap: 1rem;
   display: flex;
   flex-flow: column wrap;
+
+  margin-top: 1rem;
 }
 
 @media (min-width: 1200px) {
@@ -20,6 +22,8 @@
   .tasks-container {
     gap: 3rem;
     order: 1;
+
+    margin: 0;
     width: calc(70% - 3rem);
   }
 }
