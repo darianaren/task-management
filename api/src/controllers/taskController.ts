@@ -139,7 +139,7 @@ export class TaskController {
       await this.taskModel.delete(parseInt(id));
 
       return successResponse(res, {
-        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT]
+        ...SUCCESS_RESPONSES[SUCCESS.OK]
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -169,7 +169,7 @@ export class TaskController {
       await this.taskModel.update(parseInt(id), updateData);
 
       return successResponse(res, {
-        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT]
+        ...SUCCESS_RESPONSES[SUCCESS.OK]
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

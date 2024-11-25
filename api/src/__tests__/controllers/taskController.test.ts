@@ -131,7 +131,7 @@ describe('TaskController', () => {
 
       expect(mockTaskModel.delete).toHaveBeenCalledWith(1);
       expect(mockRes.json).toHaveBeenCalledWith({
-        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT],
+        ...SUCCESS_RESPONSES[SUCCESS.OK],
         success: true
       });
     });
@@ -161,7 +161,7 @@ describe('TaskController', () => {
         title: 'Updated Task'
       });
       expect(mockRes.json).toHaveBeenCalledWith({
-        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT],
+        ...SUCCESS_RESPONSES[SUCCESS.OK],
         success: true
       });
     });
