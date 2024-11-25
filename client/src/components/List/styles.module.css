@@ -1,0 +1,36 @@
+.loading-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-container {
+  gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+@media (min-width: 1200px) {
+  .list-container {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+}
+
+@media (pointer: fine) {
+  .list-container::-webkit-scrollbar {
+    width: 0.2rem;
+    background: none;
+  }
+
+  .list-container::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  .list-container::-webkit-scrollbar-thumb {
+    border-radius: 0.25rem;
+    background-color: #b4b4b4;
+  }
+}

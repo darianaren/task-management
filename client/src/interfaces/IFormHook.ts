@@ -2,6 +2,8 @@
 
 import React from "react";
 
+import { SelectChangeEvent } from "@mui/material";
+
 interface CustomValidator {
   (value: string): boolean;
 }
@@ -12,6 +14,10 @@ export interface VoidFunction {
 
 export interface ChangeFunction {
   (event: React.ChangeEvent<HTMLInputElement>): void;
+}
+
+export interface ChangeSelectFunction<T> {
+  (event: SelectChangeEvent<T>): void;
 }
 
 export interface BlurFunction {

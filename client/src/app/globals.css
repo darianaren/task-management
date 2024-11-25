@@ -1,13 +1,18 @@
 * {
+  font-family: Roboto;
+  color: #363e42;
+
   margin: 0;
   padding: 0;
-  font-family: Roboto;
+
   box-sizing: border-box;
 }
 
 body {
   position: relative;
   overflow-x: hidden;
+
+  background-color: #f0f7ff;
 }
 
 h1,

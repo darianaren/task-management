@@ -38,7 +38,7 @@ describe('LabelController', () => {
     labelController = new LabelController(mockUserModel);
 
     (mockReq as any).user = { id: 1 };
-    mockReq.body = { label: 'important' };
+    mockReq.body = { label: 'Important' };
     jest.clearAllMocks();
   });
 

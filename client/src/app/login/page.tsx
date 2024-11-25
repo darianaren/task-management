@@ -2,13 +2,20 @@
 
 import React, { useCallback, useState } from "react";
 
+import dynamic from "next/dynamic";
+
 import styles from "./styles.module.css";
 
-import LoginLayout from "@/layouts/LoginLayout/LoginLayout";
 import { ToggleRegisterFunction } from "@/interfaces/ILogin";
-import RegisterLayout from "@/layouts/RegisterLayout/RegisterLayout";
 import { LAYOUT_DIRECTION } from "@/layouts/LoginAsideLayout/constants";
-import LoginAsideLayout from "@/layouts/LoginAsideLayout/LoginAsideLayout";
+
+const RegisterLayout = dynamic(
+  () => import("@/layouts/RegisterLayout/RegisterLayout")
+);
+const LoginAsideLayout = dynamic(
+  () => import("@/layouts/LoginAsideLayout/LoginAsideLayout")
+);
+const LoginLayout = dynamic(() => import("@/layouts/LoginLayout/LoginLayout"));
 
 export default function Login() {
   const [registeredUser, setRegisteredUser] = useState(true);

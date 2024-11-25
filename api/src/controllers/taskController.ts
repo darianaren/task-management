@@ -70,21 +70,31 @@ export class TaskController {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id } = (req as any).user;
 
-    const { page, limit, status, label, dueDate, orderBy, orderDirection } =
-      req.query as {
-        page?: string;
-        limit?: string;
-        status?: string;
-        label?: string;
-        dueDate?: string;
-        orderBy?: 'createdAt' | 'dueDate';
-        orderDirection?: 'ASC' | 'DESC';
-      };
+    const {
+      page,
+      title,
+      limit,
+      status,
+      label,
+      dueDate,
+      orderBy,
+      orderDirection
+    } = req.query as {
+      page?: string;
+      title?: string;
+      limit?: string;
+      status?: string;
+      label?: string;
+      dueDate?: string;
+      orderBy?: 'createdAt' | 'dueDate';
+      orderDirection?: 'ASC' | 'DESC';
+    };
 
     try {
-      const tasks = await this.taskModel.findByUserId(
+      const response = await this.taskModel.findByUserId(
         id,
         {
+          title,
           dueDate,
           orderBy,
           orderDirection,
@@ -99,7 +109,7 @@ export class TaskController {
 
       return successResponse(res, {
         ...SUCCESS_RESPONSES[SUCCESS.OK],
-        data: tasks
+        data: response
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,7 +139,7 @@ export class TaskController {
       await this.taskModel.delete(parseInt(id));
 
       return successResponse(res, {
-        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT]
+        ...SUCCESS_RESPONSES[SUCCESS.OK]
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -159,7 +169,7 @@ export class TaskController {
       await this.taskModel.update(parseInt(id), updateData);
 
       return successResponse(res, {
-        ...SUCCESS_RESPONSES[SUCCESS.NO_CONTENT]
+        ...SUCCESS_RESPONSES[SUCCESS.OK]
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

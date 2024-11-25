@@ -64,13 +64,14 @@ export class TaskModel {
    * @param {number} pagination.limit - The number of tasks to return per page.
    * @param {number} pagination.page - The current page of tasks.
    *
-   * @returns {Promise<Task[]>} An array of tasks that match the provided filters and pagination.
+   * @returns {Promise<{ tasks: Task[]; totalPages: number }>} An array of tasks that match the provided filters and pagination.
    *
    * @throws {Error} Throws an error if there is an issue querying the database.
    */
   async findByUserId(
     userId: number,
     filters = {} as {
+      title?: string;
       labels?: string[];
       statuses?: string[];
       dueDate?: string; // format 'YYYY-MM-DD'
@@ -78,34 +79,53 @@ export class TaskModel {
       orderDirection?: 'ASC' | 'DESC';
     },
     pagination = { limit: 10, page: 1 }
-  ): Promise<Task[]> {
+  ): Promise<{ tasks: Task[]; totalPages: number }> {
     const offset = (pagination.page - 1) * pagination.limit;
 
     const {
-      orderBy,
-      orderDirection = 'ASC',
+      title,
+      labels,
       dueDate,
+      orderBy,
       statuses,
-      labels
+      orderDirection = 'ASC'
     } = filters;
 
     let query = `SELECT * FROM tasks WHERE userId = ?`;
+    let countQuery = `SELECT COUNT(*) as total FROM tasks WHERE userId = ?`;
 
     const queryParams: (string | number)[] = [userId];
+    const countParams: (string | number)[] = [userId];
+
+    if (title) {
+      query += ` AND title LIKE ?`;
+      countQuery += ` AND title LIKE ?`;
+      const titleParam = `%${title}%`;
+      queryParams.push(titleParam);
+      countParams.push(titleParam);
+    }
 
     if (dueDate) {
       query += ` AND dueDate = ?`;
+      countQuery += ` AND dueDate = ?`;
       queryParams.push(dueDate);
+      countParams.push(dueDate);
     }
 
     if (statuses && statuses.length > 0) {
-      query += ` AND status IN (${statuses.map(() => '?').join(', ')})`;
+      const statusPlaceholders = statuses.map(() => '?').join(', ');
+      query += ` AND status IN (${statusPlaceholders})`;
+      countQuery += ` AND status IN (${statusPlaceholders})`;
       queryParams.push(...statuses);
+      countParams.push(...statuses);
     }
 
     if (labels && labels.length > 0) {
+      const labelsParam = `%${labels.join('%')}%`;
       query += ` AND labels LIKE ?`;
-      queryParams.push(`%${labels.join('%')}%`);
+      countQuery += ` AND labels LIKE ?`;
+      queryParams.push(labelsParam);
+      countParams.push(labelsParam);
     }
 
     if (orderBy) {
@@ -115,9 +135,19 @@ export class TaskModel {
     query += ` LIMIT ? OFFSET ?`;
     queryParams.push(pagination.limit, offset);
 
-    const rows = await this.db.all(query, queryParams);
+    const [rows, totalCountRow] = await Promise.all([
+      this.db.all(query, queryParams),
+      this.db.get(countQuery, countParams)
+    ]);
 
-    return rows.map((row) => ({ ...row, labels: JSON.parse(row.labels) }));
+    const totalCount = totalCountRow?.total || 0;
+
+    const totalPages = Math.ceil(totalCount / pagination.limit);
+
+    return {
+      tasks: rows.map((row) => ({ ...row, labels: JSON.parse(row.labels) })),
+      totalPages
+    };
   }
 
   /**

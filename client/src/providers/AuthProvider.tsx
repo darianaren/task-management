@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -9,18 +9,55 @@ import {
   GetUserResponse,
   LoginFunction,
   LoginResponse,
-  LogoutFunction
+  LogoutFunction,
+  UpdateUserFunction,
+  User
 } from "@/interfaces/IAuthProvider";
 import AuthContext from "@/context/AuthContext";
 import { CustomError } from "@/utils/customError";
 import { stringToBase64 } from "@/utils/base64Utils";
 import { authEndpoints, usersEndpoints } from "@/utils/endpoints";
-import { setItem } from "@/utils/localStorage";
+import { getItem } from "@/utils/localStorage";
+
+const userDefault = Object.freeze({
+  name: "Usuario",
+  labels: []
+});
 
 function AuthProvider({ children }: AuthProviderProps) {
   const { push } = useRouter();
+  const [user, setUser] = useState<User>(userDefault);
+
+  const savedUser = getItem("userData", {
+    name: "Usuario",
+    labels: []
+  });
+
+  useEffect(() => {
+    if (savedUser?.expired || !savedUser?.value) {
+      return setUser(userDefault);
+    }
+    return setUser(savedUser?.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
+
+  /**
+   * Updates the saved user information in local storage.
+   *
+   * If the user object is not provided, the function will reset the user information
+   * to the default values. Otherwise, it saves the updated user information.
+   *
+   * @param {User} user - The new user information to save.
+   * @param {string} user.name - The name of the user.
+   * @param {Array<string>} user.labels - An array of labels associated with the user.
+   * @returns {Promise<void>}
+   */
+  const updateUser: UpdateUserFunction = async (user = userDefault) => {
+    setUser(user);
+    (await import("@/utils/localStorage")).setItem("userData", user);
+  };
 
   /**
    * Logs in the user with the provided email and password.
@@ -63,7 +100,11 @@ function AuthProvider({ children }: AuthProviderProps) {
           endpoint: usersEndpoints.get
         });
 
-        setItem("userData", userData.data);
+        (await import("@/utils/localStorage")).setItem(
+          "userData",
+          userData.data
+        );
+        setUser(userData.data);
 
         push("/");
       }
@@ -82,12 +123,13 @@ function AuthProvider({ children }: AuthProviderProps) {
    */
   const logout: LogoutFunction = useCallback(async () => {
     (await import("@/utils/cookies")).deleteCookie(cookieName);
+    (await import("@/utils/localStorage")).removeItem("userData");
 
     push("/login");
   }, [cookieName, push]);
 
   return (
-    <AuthContext.Provider value={{ login, logout }}>
+    <AuthContext.Provider value={{ user, updateUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

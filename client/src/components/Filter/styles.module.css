@@ -1,0 +1,39 @@
+.filters-container {
+  gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1rem;
+
+  border-radius: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 4px 8px #00000048;
+}
+
+.input {
+  flex-grow: 1;
+
+  min-width: 10rem;
+}
+
+.icon {
+  cursor: pointer;
+  filter: invert(14%) sepia(10%) saturate(960%) hue-rotate(160deg)
+    brightness(97%) contrast(85%);
+}
+
+.menu-filters {
+  gap: 0.5rem;
+  display: flex;
+  flex-flow: column wrap;
+
+  padding: 1.5rem;
+}
+
+@media (min-width: 1200px) {
+  .filters-container {
+    padding: 2rem;
+  }
+}
