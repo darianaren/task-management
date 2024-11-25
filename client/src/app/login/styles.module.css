@@ -1,7 +1,32 @@
 .main-container {
-  position: relative;
+  position: absolute;
 
+  top: 0;
   display: grid;
   grid-template-rows: 100vh;
-  grid-template-columns: repeat(2, 50%);
+  grid-template-columns: repeat(2, 100vw);
+
+  overflow: hidden;
+  transition: transform 1s ease;
+}
+
+.main-container.left {
+  transform: translateX(-50%);
+}
+
+.main-container.right {
+  transform: translateX(0);
+}
+
+@media (min-width: 1200px) {
+  .main-container {
+    position: relative;
+    grid-template-columns: repeat(2, 50%);
+    transition: none;
+  }
+
+  .main-container.right,
+  .main-container.left {
+    transform: translateX(0);
+  }
 }
