@@ -4,7 +4,7 @@ import React from "react";
 
 import { Box } from "@mui/material";
 
-import TaskCard from "../TaskCard/TaskCard";
+import MetricCard from "../MetricCard/MetricCard";
 
 import styles from "./styles.module.css";
 
@@ -42,7 +42,7 @@ const Metrics: React.FC<MetricsProps> = ({
   return (
     <Box component="section" className={styles["metrics-container"]}>
       {cards.map(({ id, label, number }) => (
-        <TaskCard
+        <MetricCard
           key={id}
           label={label}
           number={number}
