@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import React, { useRouter } from "next/navigation";
 import { Box, Typography, Button } from "@mui/material";
 
 const NotFound = () => {
@@ -8,12 +8,15 @@ const NotFound = () => {
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      textAlign="center"
+      component="section"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        textAlign: "center"
+      }}
     >
       <Typography variant="h1" color="primary" gutterBottom>
         404
@@ -25,10 +28,10 @@ const NotFound = () => {
         La ruta a la que intentaste acceder no existe.
       </Typography>
       <Button
-        variant="contained"
         color="primary"
-        onClick={() => router.push("/")}
+        variant="contained"
         sx={{ marginTop: "20px" }}
+        onClick={() => router.push("/")}
       >
         Volver al inicio
       </Button>
