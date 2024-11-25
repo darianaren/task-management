@@ -1,0 +1,25 @@
+.main-container {
+  margin: 1rem;
+}
+
+.tasks-container {
+  gap: 1rem;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+@media (min-width: 1200px) {
+  .main-container {
+    gap: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+
+    margin: 3rem 10vw 0;
+  }
+
+  .tasks-container {
+    gap: 3rem;
+    order: 1;
+    width: calc(70% - 3rem);
+  }
+}
