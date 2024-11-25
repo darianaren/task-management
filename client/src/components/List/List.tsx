@@ -45,7 +45,7 @@ const List: React.FC<TaskListProps> = ({
   if (isLoading)
     return (
       <Stack className={styles["loading-container"]}>
-        <CircularProgress color="secondary" size="3rem" />;
+        <CircularProgress color="secondary" size="3rem" />
       </Stack>
     );
 

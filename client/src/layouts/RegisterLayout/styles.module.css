@@ -1,0 +1,23 @@
+.register-container {
+  gap: 1rem;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+
+  padding: 10vw;
+}
+
+.form-container {
+  gap: 1rem;
+  display: flex;
+  flex-flow: column wrap;
+
+  margin: 1rem 0;
+}
+
+.link {
+  color: #1976d2;
+  font-weight: 500;
+
+  cursor: pointer;
+}

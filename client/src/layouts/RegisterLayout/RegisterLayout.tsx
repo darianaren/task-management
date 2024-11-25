@@ -8,6 +8,7 @@ import {
   FORM_VALIDATIONS,
   INITIAL_STATE_FORM
 } from "./constants";
+import styles from "./styles.module.css";
 
 import useForm from "@/hooks/useForm";
 import useAlert from "@/hooks/useAlert";
@@ -73,9 +74,9 @@ const RegisterLayout: React.FC<RegisterLayoutProps> = ({ handleLogin }) => {
   );
 
   return (
-    <section>
+    <section className={styles["register-container"]}>
       <h2>Crear cuenta</h2>
-      <form>
+      <form className={styles["form-container"]}>
         <TextField
           fullWidth
           name="name"
@@ -127,7 +128,10 @@ const RegisterLayout: React.FC<RegisterLayoutProps> = ({ handleLogin }) => {
         </Button>
       </form>
       <p>
-        ¿Ya tienes cuenta? <span onClick={handleLogin}>Inicia sesión</span>
+        ¿Ya tienes cuenta?{" "}
+        <span onClick={handleLogin} className={styles.link}>
+          Inicia sesión
+        </span>
       </p>
     </section>
   );
