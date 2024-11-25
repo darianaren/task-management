@@ -71,6 +71,7 @@ export class TaskModel {
   async findByUserId(
     userId: number,
     filters = {} as {
+      title?: string;
       labels?: string[];
       statuses?: string[];
       dueDate?: string; // format 'YYYY-MM-DD'
@@ -82,16 +83,22 @@ export class TaskModel {
     const offset = (pagination.page - 1) * pagination.limit;
 
     const {
-      orderBy,
-      orderDirection = 'ASC',
+      title,
+      labels,
       dueDate,
+      orderBy,
       statuses,
-      labels
+      orderDirection = 'ASC'
     } = filters;
 
     let query = `SELECT * FROM tasks WHERE userId = ?`;
 
     const queryParams: (string | number)[] = [userId];
+
+    if (title) {
+      query += ` AND title LIKE ?`;
+      queryParams.push(`%${title}%`); // Use `%${title}%` for partial matches
+    }
 
     if (dueDate) {
       query += ` AND dueDate = ?`;
