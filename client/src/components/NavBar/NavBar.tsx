@@ -8,11 +8,9 @@ import logoutIcon from "public/icons/logout.svg";
 
 import styles from "./styles.module.css";
 
-import useAuth from "@/hooks/useAuth";
+import { NavBarProps } from "@/interfaces/INavBar";
 
-const NavBar = () => {
-  const { logout, getUser } = useAuth();
-  const user = getUser();
+const NavBar: React.FC<NavBarProps> = ({ user, handleLogout }) => {
   return (
     <AppBar position="static">
       <Toolbar
@@ -21,13 +19,13 @@ const NavBar = () => {
           padding: { xs: "0 1rem", lg: "0 10vw" }
         }}
       >
-        <h1>👋🏻 ¡Hola, {user.name}!</h1>
+        <h1 style={{ color: "#fff" }}>👋🏻 ¡Hola, {user.name}!</h1>
         <Image
           width={25}
           height={25}
           alt="Logout"
           src={logoutIcon}
-          onClick={logout}
+          onClick={handleLogout}
           className={styles.icon}
         />
       </Toolbar>
