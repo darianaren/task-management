@@ -91,7 +91,7 @@ export class TaskController {
     };
 
     try {
-      const tasks = await this.taskModel.findByUserId(
+      const response = await this.taskModel.findByUserId(
         id,
         {
           title,
@@ -109,7 +109,7 @@ export class TaskController {
 
       return successResponse(res, {
         ...SUCCESS_RESPONSES[SUCCESS.OK],
-        data: tasks
+        data: response
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

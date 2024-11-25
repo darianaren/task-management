@@ -13,7 +13,8 @@ describe('TaskModel', () => {
   beforeEach(() => {
     dbMock = {
       run: jest.fn(),
-      all: jest.fn()
+      all: jest.fn(),
+      get: jest.fn()
     } as any;
     taskModel = new TaskModel(dbMock);
   });
@@ -70,12 +71,17 @@ describe('TaskModel', () => {
       ];
 
       dbMock.all.mockResolvedValue(mockRows);
+      dbMock.get.mockResolvedValue({ total: 1 });
 
       const result = await taskModel.findByUserId(userId, filters, pagination);
 
-      expect(result).toEqual(
-        mockRows.map((row) => ({ ...row, labels: JSON.parse(row.labels) }))
-      );
+      expect(result).toEqual({
+        tasks: mockRows.map((row) => ({
+          ...row,
+          labels: JSON.parse(row.labels)
+        })),
+        totalPages: 1
+      });
     });
   });
 

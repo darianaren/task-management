@@ -87,7 +87,10 @@ describe('TaskController', () => {
       const userTasks = [
         { ...taskTest, createdAt: '2024-11-21', userId: 10 } as Task
       ];
-      mockTaskModel.findByUserId.mockResolvedValue(userTasks);
+      mockTaskModel.findByUserId.mockResolvedValue({
+        tasks: userTasks,
+        totalPages: 1
+      });
 
       await taskController.getTasks(mockReq as Request, mockRes as Response);
 
@@ -104,7 +107,7 @@ describe('TaskController', () => {
       );
       expect(mockRes.json).toHaveBeenCalledWith({
         ...SUCCESS_RESPONSES[SUCCESS.OK],
-        data: userTasks,
+        data: { tasks: userTasks, totalPages: 1 },
         success: true
       });
     });
