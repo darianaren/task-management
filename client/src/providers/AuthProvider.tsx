@@ -1,16 +1,17 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
 import {
   AuthProviderProps,
-  GetUserFunction,
   GetUserResponse,
   LoginFunction,
   LoginResponse,
-  LogoutFunction
+  LogoutFunction,
+  UpdateUserFunction,
+  User
 } from "@/interfaces/IAuthProvider";
 import AuthContext from "@/context/AuthContext";
 import { CustomError } from "@/utils/customError";
@@ -18,26 +19,45 @@ import { stringToBase64 } from "@/utils/base64Utils";
 import { authEndpoints, usersEndpoints } from "@/utils/endpoints";
 import { getItem } from "@/utils/localStorage";
 
+const userDefault = Object.freeze({
+  name: "Usuario",
+  labels: []
+});
+
 function AuthProvider({ children }: AuthProviderProps) {
   const { push } = useRouter();
+  const [user, setUser] = useState<User>(userDefault);
+
+  const savedUser = getItem("userData", {
+    name: "Usuario",
+    labels: []
+  });
+
+  useEffect(() => {
+    if (savedUser?.expired || !savedUser?.value) {
+      return setUser(userDefault);
+    }
+    return setUser(savedUser?.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME || "userToken";
 
   /**
-   * Retrieves the user data stored in localStorage.
+   * Updates the saved user information in local storage.
    *
-   * @returns {User} The user data if found, or null if no data is present.
+   * If the user object is not provided, the function will reset the user information
+   * to the default values. Otherwise, it saves the updated user information.
+   *
+   * @param {User} user - The new user information to save.
+   * @param {string} user.name - The name of the user.
+   * @param {Array<string>} user.labels - An array of labels associated with the user.
+   * @returns {Promise<void>}
    */
-  const getUser: GetUserFunction = useCallback(() => {
-    const savedUser = getItem("userData", {
-      name: "Usuario",
-      labels: []
-    });
-    if (savedUser?.expired || !savedUser?.value) {
-      return { name: "Usuario", labels: [] };
-    }
-    return savedUser?.value;
-  }, []);
+  const updateUser: UpdateUserFunction = async (user = userDefault) => {
+    setUser(user);
+    (await import("@/utils/localStorage")).setItem("userData", user);
+  };
 
   /**
    * Logs in the user with the provided email and password.
@@ -84,6 +104,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           "userData",
           userData.data
         );
+        setUser(userData.data);
 
         push("/");
       }
@@ -108,7 +129,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   }, [cookieName, push]);
 
   return (
-    <AuthContext.Provider value={{ getUser, login, logout }}>
+    <AuthContext.Provider value={{ user, updateUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -54,12 +54,14 @@ export interface LogoutFunction {
   (): Promise<void>;
 }
 
-export interface GetUserFunction {
-  (): User;
+export interface UpdateUserFunction {
+  // eslint-disable-next-line no-unused-vars
+  (user: User): Promise<void>;
 }
 
 export interface AuthContextType {
-  getUser: GetUserFunction;
+  user: User;
   login: LoginFunction;
   logout: LogoutFunction;
+  updateUser: UpdateUserFunction;
 }
