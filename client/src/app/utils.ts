@@ -1,11 +1,26 @@
+import { ORDER_BY_OPTIONS_VALUE, STATUS_OPTIONS_VALUE } from "./constants";
+
 export type QueryStringParams = {
   page?: number;
   title?: string;
   label?: string[];
-  status?: string[];
   dueDate?: string;
-  orderBy?: string;
+  status?: Array<"Pendiente" | "En progreso" | "Completada">;
+  orderBy?:
+    | "Más antiguo"
+    | "Más reciente"
+    | "Entrega más cercana"
+    | "Entrega más lejana";
+};
+
+type FiltersProps = {
+  page?: number;
+  title?: string;
+  label?: string;
+  status?: string;
+  dueDate?: string;
   orderDirection?: "ASC" | "DESC";
+  orderBy?: "createdAt" | "dueDate";
 };
 
 /**
@@ -17,8 +32,7 @@ export type QueryStringParams = {
  * @param {string[]} [params.label=[]] - An array of labels to filter by.
  * @param {string[]} [params.status=[]] - An array of statuses to filter by.
  * @param {string} [params.dueDate=""] - The due date to filter by.
- * @param {string} [params.orderBy="createdAt"] - The field to order by.
- * @param {"ASC" | "DESC"} [params.orderDirection="DESC"] - The direction to order the results.
+ * @param {string} [params.orderBy="Más reciente"] - The field to order by.
  * @returns {string} A properly formatted query string.
  */
 export const createQueryString = ({
@@ -27,19 +41,24 @@ export const createQueryString = ({
   label = [],
   status = [],
   dueDate = "",
-  orderBy = "createdAt",
-  orderDirection = "DESC"
+  orderBy = "Más reciente"
 }: QueryStringParams): string => {
-  const filters: Record<string, string | number> = {
+  const parsedOrderBy =
+    ORDER_BY_OPTIONS_VALUE[orderBy] || ORDER_BY_OPTIONS_VALUE.default;
+
+  const filters: FiltersProps = {
     page,
-    orderBy,
-    orderDirection
+    orderBy: parsedOrderBy.orderBy as "createdAt" | "dueDate",
+    orderDirection: parsedOrderBy.orderDirection as "ASC" | "DESC"
   };
 
   if (title) filters.title = title;
   if (dueDate) filters.dueDate = dueDate;
   if (label.length) filters.label = label.join(",");
-  if (status.length) filters.status = status.join(",");
+  if (status.length)
+    filters.status = status
+      .map((value) => STATUS_OPTIONS_VALUE[value])
+      .join(",");
 
   const queryString = Object.entries(filters)
     .filter(([, value]) => value != null)

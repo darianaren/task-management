@@ -7,15 +7,13 @@ export const INITIAL_STATE_REDUCER = Object.freeze({
   status: [],
   dueDate: "",
   isLoading: false,
-  orderBy: "createdAt",
-  orderDirection: "DESC"
+  orderBy: "Más reciente"
 });
 
 export const ACTIONS_TYPES = Object.freeze({
   SET_PAGE: Symbol("Set page value"),
-  SET_SEARCH: Symbol("Set title value"),
+  SET_FILTERS: Symbol("Set filters value"),
   CLEAR_FILTERS: Symbol("Reset filters"),
-  APPLY_FILTERS: Symbol("Apply filters"),
   SET_LOADING: Symbol("Set loading value")
 });
 
@@ -60,4 +58,31 @@ export const ERROR_MESSAGES: {
   default: "Ha ocurrido un error al intentar agregar la etiqueta",
   "User not found":
     "Ocurrió un problema de autentificación. Por favor, vuelva a iniciar sesión."
+});
+
+export const ORDER_BY_OPTIONS = Object.freeze([
+  "Más antiguo",
+  "Más reciente",
+  "Entrega más cercana",
+  "Entrega más lejana"
+]);
+
+export const STATUS_OPTIONS = Object.freeze([
+  "Pendiente",
+  "En progreso",
+  "Completada"
+]);
+
+export const ORDER_BY_OPTIONS_VALUE = Object.freeze({
+  "Más antiguo": { orderBy: "createdAt", orderDirection: "ASC" },
+  "Más reciente": { orderBy: "createdAt", orderDirection: "DESC" },
+  "Entrega más cercana": { orderBy: "dueDate", orderDirection: "ASC" },
+  "Entrega más lejana": { orderBy: "dueDate", orderDirection: "DESC" },
+  default: { orderBy: "createdAt", orderDirection: "DESC" }
+});
+
+export const STATUS_OPTIONS_VALUE = Object.freeze({
+  Pendiente: "pending",
+  "En progreso": "in-progress",
+  Completada: "completed"
 });

@@ -93,8 +93,8 @@ const NewTask: React.FC<NewTaskProps> = ({
           name="status"
           label="Estado"
           value={form.status}
-          id="demo-simple-select"
-          onChange={handleChange as ChangeSelectFunction}
+          id="simple-select-status"
+          onChange={handleChange as ChangeSelectFunction<string>}
           labelId="simple-select-status"
           sx={{ maxHeight: "50vh" }}
         >

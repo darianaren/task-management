@@ -16,8 +16,8 @@ export interface ChangeFunction {
   (event: React.ChangeEvent<HTMLInputElement>): void;
 }
 
-export interface ChangeSelectFunction {
-  (event: SelectChangeEvent<string>): void;
+export interface ChangeSelectFunction<T> {
+  (event: SelectChangeEvent<T>): void;
 }
 
 export interface BlurFunction {

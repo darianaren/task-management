@@ -15,13 +15,7 @@ import {
 import { reducer } from "./reducer";
 import styles from "./styles.module.css";
 import { createQueryString, QueryStringParams } from "./utils";
-import {
-  applyFilters,
-  clearFilters,
-  setLoading,
-  setPage,
-  setSearch
-} from "./actions";
+import { setPage, setLoading, clearFilters, setFilters } from "./actions";
 
 import useAuth from "@/hooks/useAuth";
 import useForm from "@/hooks/useForm";
@@ -34,13 +28,13 @@ import {
   AddTaskFunction,
   DeleteTaskFunction,
   SetPageFunction,
-  Task,
   TaskResponse,
   UpdateTaskFunction
 } from "@/interfaces/ITask";
 import { SEVERITY_ALERT } from "@/constants/severityAlert";
 import { labelsEndpoints, tasksEndpoints } from "@/utils/endpoints";
 import { AddLabelFunction, LabelResponse } from "@/interfaces/ILabel";
+import { ResetFiltersFunction } from "@/interfaces/IFilter";
 
 const List = dynamic(() => import("@/components/List/List"));
 const NavBar = dynamic(() => import("@/components/NavBar/NavBar"));
@@ -185,28 +179,25 @@ export default function Home() {
     [taskEndpoint, showAlert]
   );
 
-  // const handleSearch: ChangeFunction = useCallback((event) => {
-  //   const { value } = event.target;
-  //   dispatch(setSearch(value));
-  // }, []);
-
-  // const handleResetFilters = useCallback(() => dispatch(clearFilters()), []);
+  /**
+   * Resets all applied filters by dispatching the corresponding action.
+   */
+  const handleResetFilters: ResetFiltersFunction = useCallback(
+    () => dispatch(clearFilters()),
+    []
+  );
 
   /**
-   * Applies the filters received and dispatches the corresponding action.
+   * Handles the change event and updating the filters value in the global state.
    *
-   * @param payload Object that contains the filters to apply, where the keys are the field names
-   * and the values are the values to filter.
+   * @callback ChangeFunction
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The event of the change in the input.
+   * @returns {void} This function does not return any value.
    */
-  // const handleApplyFilters = useCallback((payload) => {
-  //   const filters = {};
-
-  //   Object.entries(payload).forEach(([field, value]) => {
-  //     if (value) filters[field] = value;
-  //   });
-
-  //   dispatch(applyFilters(filters));
-  // }, []);
+  const handleChangeFilter: ChangeFunction = useCallback((event) => {
+    const { name, value } = event.target;
+    dispatch(setFilters({ name, value }));
+  }, []);
 
   /**
    * Set page value.
@@ -214,7 +205,6 @@ export default function Home() {
    * @param {number} page Current number page.
    * @returns {void}
    */
-
   const handleSetPage: SetPageFunction = useCallback((page) => {
     dispatch(setPage(page));
   }, []);
@@ -222,8 +212,8 @@ export default function Home() {
   /**
    * Update the status of a specific task.
    *
-   * @param taskId The identifier of the task to delete.
-   * @param status New status of the task.
+   * @param {number} taskId The identifier of the task to delete.
+   * @param {satring} status New status of the task.
    */
   const handleUpdateTask: UpdateTaskFunction = useCallback(
     async (taskId, status) => {
@@ -256,7 +246,7 @@ export default function Home() {
   /**
    * Deletes a specific task.
    *
-   * @param taskId The identifier of the task to delete.
+   * @param {number} taskId The identifier of the task to delete.
    */
   const handleDeleteTask: DeleteTaskFunction = useCallback(
     async (taskId) => {
@@ -300,11 +290,14 @@ export default function Home() {
         <div className={styles["tasks-container"]}>
           <Metrics {...(metricsData?.data || {})} isLoading={metricsLoading} />
           <Filter
+            label={state.label}
             search={state.title}
+            status={state.status}
+            dueDate={state.dueDate}
+            orderBy={state.orderBy}
             labelOptions={user.labels}
-            // handleSearch={handleSearch}
-            // handleApplyFilters={handleApplyFilters}
-            // handleResetFilters={handleResetFilters}
+            handleChangeFilter={handleChangeFilter}
+            handleResetFilters={handleResetFilters}
           />
           <List
             page={state.page}

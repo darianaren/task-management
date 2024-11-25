@@ -8,12 +8,11 @@ interface State {
   isLoading: boolean;
   label: Array<string>;
   status: Array<string>;
-  orderDirection: string;
 }
 
 interface Action {
   type: symbol;
-  payload: any;
+  payload?: any;
 }
 
 export const reducer = (state: State, action: Action): State => {
@@ -25,26 +24,21 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         page: payload
       };
+    case ACTIONS_TYPES.SET_FILTERS:
+      return {
+        ...state,
+        [payload.name]: payload.value,
+        page: 1
+      };
+
+    case ACTIONS_TYPES.CLEAR_FILTERS:
+      return {
+        ...INITIAL_STATE_REDUCER
+      };
     case ACTIONS_TYPES.SET_LOADING:
       return {
         ...state,
         isLoading: payload
-      };
-    case ACTIONS_TYPES.SET_SEARCH:
-      return {
-        ...state,
-        title: payload,
-        page: 1
-      };
-    case ACTIONS_TYPES.APPLY_FILTERS:
-      return {
-        ...state,
-        ...payload,
-        page: 1
-      };
-    case ACTIONS_TYPES.CLEAR_FILTERS:
-      return {
-        ...INITIAL_STATE_REDUCER
       };
     default:
       return state;
