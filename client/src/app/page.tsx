@@ -47,7 +47,7 @@ export default function Home() {
     initialForm: INITIAL_STATE_FORM
   });
 
-  const { data: tasksData, isLoading: tasksLoading } = useSWR(
+  const { data: tasksData, isLoading: tasksLoading } = useSWR<TaskResponse>(
     tasksEndpoints.get + createQueryString(state as QueryStringParams),
     fetcher,
     {
@@ -151,8 +151,8 @@ export default function Home() {
           showAlert("Se ha añadido una nueva tarea", SEVERITY_ALERT.success);
 
           await Promise.all([
-            mutate(tasksEndpoints.metrics),
-            mutate(tasksEndpoints.get)
+            mutate(tasksEndpoints.get),
+            mutate(tasksEndpoints.metrics)
           ]);
 
           setIsLoading(false);
@@ -175,45 +175,47 @@ export default function Home() {
   //   dispatch(setSearch(value));
   // }, []);
 
-  // const handleApplyFilters = useCallback((payload) => {
-  //   const filters = {};
-
-  //   Object.entries(payload).forEach(([field, value]) => {
-  //     if (value) filters[field] = value;
-  //   });
-
-  //   dispatch(applyFilters(filters));
-  // }, []);
-
   // const handleResetFilters = useCallback(() => dispatch(clearFilters()), []);
 
-  // const handleDeleteTask = useCallback(
-  //   async (taskId) => {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await (
-  //         await import("@/services/fetchServices")
-  //       ).fetchServices.post({
-  //         body: { id: taskId },
-  //         endpoint: tasksEndpoints.remove
-  //       });
+  const handleApplyFilters = useCallback((payload) => {
+    const filters = {};
 
-  //       if (response.success) {
-  //         await Promise.all[
-  //           (mutate(tasksEndpoints.metrics), mutate(tasksEndpoints.get))
-  //         ];
-  //       }
-  //     } catch (error) {
-  //       showAlert(
-  //         "Ha ocurrido un error al intentar eliminar la tarea",
-  //         SEVERITY_ALERT.error
-  //       );
-  //     }
-  //     setIsLoading(false);
-  //   },
-  //   [showAlert]
-  // );
+    Object.entries(payload).forEach(([field, value]) => {
+      if (value) filters[field] = value;
+    });
 
+    dispatch(applyFilters(filters));
+  }, []);
+
+  const handleDeleteTask = useCallback(
+    async (taskId) => {
+      setIsLoading(true);
+      try {
+        const response = await (
+          await import("@/services/fetchServices")
+        ).fetchServices.post({
+          body: { id: taskId },
+          endpoint: tasksEndpoints.remove
+        });
+
+        if (response.success) {
+          await Promise.all([
+            mutate(tasksEndpoints.metrics),
+            mutate(tasksEndpoints.get)
+          ]);
+        }
+      } catch (error) {
+        showAlert(
+          "Ha ocurrido un error al intentar eliminar la tarea",
+          SEVERITY_ALERT.error
+        );
+      }
+      setIsLoading(false);
+    },
+    [showAlert]
+  );
+
+  // console.log(tasksData?.data);
   return (
     <section>
       <NavBar user={user} handleLogout={handleLogout} />
@@ -235,11 +237,11 @@ export default function Home() {
             // handleResetFilters={handleResetFilters}
           />
           <List
-          // page={state.page}
-          // isLoading={tasksLoading}
-          // setPage={handleApplyFilters}
-          // tasks={tasksData?.data || []}
-          // handleDeleteTask={handleDeleteTask}
+            page={state.page}
+            isLoading={tasksLoading}
+            setPage={handleApplyFilters}
+            tasks={tasksData?.data || []}
+            handleDeleteTask={handleDeleteTask}
           />
         </div>
       </div>

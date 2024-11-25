@@ -1,6 +1,6 @@
 * {
   font-family: Roboto;
-  color: #2b3338;
+  color: #363e42;
 
   margin: 0;
   padding: 0;
@@ -11,6 +11,8 @@
 body {
   position: relative;
   overflow-x: hidden;
+
+  background-color: #f0f7ff;
 }
 
 h1,

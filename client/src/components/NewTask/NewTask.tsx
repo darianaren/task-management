@@ -3,17 +3,15 @@
 import React, { useState } from "react";
 
 import {
+  Autocomplete,
   Box,
   Button,
-  Checkbox,
+  Chip,
   CircularProgress,
-  Fab,
   FormControl,
   InputLabel,
-  ListItemText,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextField
 } from "@mui/material";
 
@@ -34,40 +32,31 @@ const NewTask: React.FC<NewTaskProps> = ({
   const { form, errors, resetForm, handleChange, blurValidator } = newTaskForm;
 
   /**
-   * Handles the selection of labels, ensuring no empty values are included.
-   * @param event - The change event from the label selection.
-   */
-  const handleSelect = (event: SelectChangeEvent<string[]>): void => {
-    const newLabels = (event.target.value as Array<string>).filter(
-      (value: string | undefined) => value
-    );
-
-    if (newLabels.length !== labels.length) setLabels(newLabels);
-  };
-
-  /**
    * Adds a new label to the list and updates the state if successful.
    * @returns {Promise<void>} Resolves when the label is added.
    */
-  const addLabel = async (): Promise<void> => {
-    const response: boolean = await handleAddLabel(form.label);
+  const addLabel = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ): Promise<void> => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      event.stopPropagation();
 
-    if (response) {
-      handleChange({
-        target: { name: "label", value: "" } as EventTarget & HTMLInputElement
-      } as React.ChangeEvent<HTMLInputElement>);
+      const response: boolean = await handleAddLabel(form.label);
 
-      setLabels((prevLabels) => {
-        if (!prevLabels.length) {
-          return [form.label];
-        }
+      if (response) {
+        setLabels((prevLabels) => {
+          if (!prevLabels.length) {
+            return [form.label];
+          }
 
-        if (prevLabels.includes(form.label)) {
-          return prevLabels;
-        }
+          if (prevLabels.includes(form.label)) {
+            return prevLabels;
+          }
 
-        return [...prevLabels, form.label];
-      });
+          return [...prevLabels, form.label];
+        });
+      }
     }
   };
 
@@ -91,6 +80,7 @@ const NewTask: React.FC<NewTaskProps> = ({
 
     if (response) {
       resetForm();
+      setLabels([]);
     }
   };
 
@@ -113,41 +103,36 @@ const NewTask: React.FC<NewTaskProps> = ({
           <MenuItem value="completed">Completado</MenuItem>
         </Select>
       </FormControl>
-      <FormControl fullWidth>
-        <InputLabel id="multiple-select-labels">Etiquetas</InputLabel>
-        <Select
-          multiple
-          value={labels}
-          label="Etiquetas"
-          onChange={handleSelect}
-          labelId="multiple-select-labels"
-          renderValue={(selected: Array<string>) => selected.join(", ")}
-        >
-          <section className={styles["new-label-section"]}>
-            <TextField
-              type="text"
-              name="label"
-              id="due-date"
-              variant="outlined"
-              value={form.label}
-              label="Nueva etiqueta"
-              onChange={handleChange}
-              sx={{
-                flexGrow: 1
-              }}
-            />
-            <Fab color="primary" aria-label="add" onClick={addLabel}>
-              +
-            </Fab>
-          </section>
-          {labelOptions.map((option) => (
-            <MenuItem key={option} value={option}>
-              <Checkbox checked={labels.indexOf(option as never) > -1} />
-              <ListItemText primary={option} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+
+      <Autocomplete
+        freeSolo
+        multiple
+        id="tags-outlined"
+        options={labelOptions}
+        value={labels}
+        onChange={(_, newValue) => setLabels(newValue)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            name="label"
+            label="Etiquetas"
+            variant="outlined"
+            value={form.label}
+            onKeyDown={addLabel}
+            onChange={handleChange}
+            placeholder="Escribe o selecciona"
+          />
+        )}
+        renderTags={(value: readonly string[], getTagProps) =>
+          value.map((option: string, index: number) => {
+            const { key, ...tagProps } = getTagProps({ index });
+            return (
+              <Chip variant="outlined" label={option} key={key} {...tagProps} />
+            );
+          })
+        }
+      />
+
       <InputLabel id="due-date">Fecha de entrega</InputLabel>
       <TextField
         type="date"
@@ -159,7 +144,11 @@ const NewTask: React.FC<NewTaskProps> = ({
         onChange={handleChange}
         helperText={errors.dueDate}
         error={Boolean(errors.dueDate)}
+        inputProps={{
+          min: new Date().toISOString().split("T")[0]
+        }}
       />
+
       <TextField
         id="title"
         type="text"
@@ -172,6 +161,7 @@ const NewTask: React.FC<NewTaskProps> = ({
         helperText={errors.title}
         error={Boolean(errors.title)}
       />
+
       <TextField
         rows={4}
         multiline
@@ -186,6 +176,7 @@ const NewTask: React.FC<NewTaskProps> = ({
         helperText={errors.description}
         error={Boolean(errors.description)}
       />
+
       <Button
         fullWidth
         color="primary"

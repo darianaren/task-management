@@ -2,22 +2,43 @@
 
 import React from "react";
 
-import { Paper, Skeleton } from "@mui/material";
+import { Card, CardContent, CardHeader, Chip, Collapse } from "@mui/material";
 
-import styles from "./styles.module.css";
+import { STATUS_AVATAR } from "./constants";
 
-const TaskCard = ({ label = "", number = 0, isLoading = false }) => {
+const TaskCard = ({ title, dueDate, labels, description, status }) => {
   return (
-    <Paper elevation={3} className={styles.card}>
-      {isLoading ? (
-        <Skeleton variant="rounded" width={60} height={30} />
-      ) : (
-        <p style={{ fontSize: "1.5rem" }}>{number}</p>
-      )}
-      <p>
-        <b>{label}</b>
-      </p>
-    </Paper>
+    <Card sx={{ width: "100%" }} component="li">
+      <CardHeader
+        sx={{
+          ".MuiCardHeader-title": {
+            fontSize: "1rem",
+            fontWeight: "bold"
+          }
+        }}
+        avatar={
+          <p style={{ fontSize: "2rem", lineHeight: 0 }}>
+            {STATUS_AVATAR[status]}
+          </p>
+        }
+        action={<p>{dueDate}</p>}
+        title={title}
+        subheader={
+          <Chip
+            label={labels[0]}
+            color="secondary"
+            size="small"
+            sx={{ color: "#ffffff" }}
+          />
+        }
+      />
+      <Collapse in={false} timeout="auto" unmountOnExit>
+        <CardContent>
+          <h3>Descripción:</h3>
+          <p>{description}</p>
+        </CardContent>
+      </Collapse>
+    </Card>
   );
 };
 
