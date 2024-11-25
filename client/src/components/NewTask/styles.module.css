@@ -1,0 +1,28 @@
+.new-task-container {
+  order: 2;
+
+  gap: 1rem;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-between;
+
+  padding: 1rem;
+
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px #00000048;
+}
+
+.new-label-section {
+  gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+
+  padding: 1rem;
+}
+
+@media (min-width: 1200px) {
+  .new-task-container {
+    width: 30%;
+    padding: 2rem;
+  }
+}

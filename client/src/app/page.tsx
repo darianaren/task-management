@@ -24,7 +24,7 @@ import { fetcher } from "@/utils/swrFetcher";
 import { LogoutFunction } from "@/interfaces/INavBar";
 import { MetricsResponse } from "@/interfaces/IMetrics";
 import { ChangeFunction } from "@/interfaces/IFormHook";
-import { Task, TaskResponse } from "@/interfaces/ITask";
+import { AddTaskFunction, Task, TaskResponse } from "@/interfaces/ITask";
 import { SEVERITY_ALERT } from "@/constants/severityAlert";
 import { labelsEndpoints, tasksEndpoints } from "@/utils/endpoints";
 import { AddLabelFunction, LabelResponse } from "@/interfaces/ILabel";
@@ -111,6 +111,8 @@ export default function Home() {
             ...user,
             labels: response.data.labels
           });
+          setIsLoading(false);
+          return true;
         }
       } catch (error) {
         const typedError = error as { details: string };
@@ -121,6 +123,7 @@ export default function Home() {
         showAlert(message, SEVERITY_ALERT.error);
       }
       setIsLoading(false);
+      return false;
     },
     [user, showAlert, updateUser]
   );
@@ -133,8 +136,8 @@ export default function Home() {
    *
    * @throws {Error} Will show an alert if there is an error while adding the task.
    */
-  const handleAddTask = useCallback(
-    async (task: Task): Promise<void> => {
+  const handleAddTask: AddTaskFunction = useCallback(
+    async (task) => {
       setIsLoading(true);
       try {
         const response = await (
@@ -145,10 +148,15 @@ export default function Home() {
         });
 
         if (response.success) {
+          showAlert("Se ha añadido una nueva tarea", SEVERITY_ALERT.success);
+
           await Promise.all([
             mutate(tasksEndpoints.metrics),
             mutate(tasksEndpoints.get)
           ]);
+
+          setIsLoading(false);
+          return true;
         }
       } catch (error) {
         showAlert(
@@ -157,6 +165,7 @@ export default function Home() {
         );
       }
       setIsLoading(false);
+      return false;
     },
     [showAlert]
   );

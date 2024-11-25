@@ -10,5 +10,5 @@ export interface LabelResponse {
 
 export interface AddLabelFunction {
   // eslint-disable-next-line no-unused-vars
-  (label: string): Promise<void>;
+  (label: string): Promise<boolean>;
 }

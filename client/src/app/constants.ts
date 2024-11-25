@@ -23,7 +23,7 @@ export const INITIAL_STATE_FORM = Object.freeze({
   label: "",
   dueDate: "",
   description: "",
-  status: "Pendiente"
+  status: "pending"
 });
 
 export const FORM_VALIDATIONS = Object.freeze({
@@ -51,6 +51,10 @@ export const FORM_MASKS = Object.freeze({
 export const ERROR_MESSAGES: {
   [key: string]: string;
 } = Object.freeze({
+  "The field label must be at least 3.":
+    "La etiqueta debe tener al menos 3 letras",
+  "The field label must not exceed 15.":
+    "La etiqueta no puede tener mas de 15 caracteres",
   "Label already exists": "Esa etiqueta ya existe",
   default: "Ha ocurrido un error al intentar agregar la etiqueta",
   "User not found":

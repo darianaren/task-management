@@ -19,7 +19,7 @@ export interface TaskResponse {
 
 export interface AddTaskFunction {
   // eslint-disable-next-line no-unused-vars
-  (task: Task): Promise<void>;
+  (task: Task): Promise<boolean>;
 }
 
 export interface NewTaskProps {

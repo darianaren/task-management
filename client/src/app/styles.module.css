@@ -1,13 +1,13 @@
 .main-container {
-  margin: 1rem;
+  margin: 3rem 1rem;
 }
 
 .tasks-container {
-  gap: 1rem;
+  gap: 3rem;
   display: flex;
   flex-flow: column wrap;
 
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
 
 @media (min-width: 1200px) {
@@ -20,7 +20,6 @@
   }
 
   .tasks-container {
-    gap: 3rem;
     order: 1;
 
     margin: 0;
