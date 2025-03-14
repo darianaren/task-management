@@ -32,5 +32,7 @@ export const ERROR_MESSAGES: {
   [key: string]: string;
 } = Object.freeze({
   default: "Ha ocurrido un error al registarse",
-  "Email already in use": "El correo electrónico ya pertenece a una cuenta."
+  "Email already in use": "El correo electrónico ya pertenece a una cuenta.",
+  "The field password must be a valid format.":
+    "Por favor, ingresa una contraseña válida"
 });

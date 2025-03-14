@@ -66,9 +66,9 @@ const RegisterLayout: React.FC<RegisterLayoutProps> = ({ handleLogin }) => {
           ERROR_MESSAGES[typedError.details] || ERROR_MESSAGES.default;
 
         showAlert(message, SEVERITY_ALERT.error);
-      }
 
-      setIsLoading(false);
+        setIsLoading(false);
+      }
     },
     [form, handleLogin, resetForm, formValidator, setIsLoading, showAlert]
   );

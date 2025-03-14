@@ -1,8 +1,18 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 
-import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Pagination,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button
+} from "@mui/material";
 
 import TaskCard from "../TaskCard/TaskCard";
 
@@ -19,20 +29,35 @@ const List: React.FC<TaskListProps> = ({
   handleUpdateTask,
   handleDeleteTask
 }) => {
+  const [open, setOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
+
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
+  const handleOpenDialog = (id: number) => {
+    setTaskToDelete(id);
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+    setTaskToDelete(null);
+  };
+
+  const confirmDelete = () => {
+    if (taskToDelete !== null) {
+      handleDeleteTask(taskToDelete);
+    }
+    handleCloseDialog();
+  };
+
   const handleRemove = useCallback(
     (id: number) => () => {
-      const confirm = window.confirm(
-        "La tarea será eliminada. ¿Desea continuar?"
-      );
-      if (confirm) {
-        handleDeleteTask(id);
-      }
+      handleOpenDialog(id);
     },
-    [handleDeleteTask]
+    []
   );
 
   const handleUpdate = useCallback(
@@ -61,6 +86,7 @@ const List: React.FC<TaskListProps> = ({
           />
         ))}
       </Box>
+
       {totalPages > 1 ? (
         <Pagination
           page={page}
@@ -70,6 +96,21 @@ const List: React.FC<TaskListProps> = ({
           sx={{ marginTop: "1.5rem" }}
         />
       ) : null}
+
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogTitle>Confirmar eliminación</DialogTitle>
+        <DialogContent>
+          ¿Estás seguro de que deseas eliminar esta tarea?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={confirmDelete} color="error">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

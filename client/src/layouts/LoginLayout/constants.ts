@@ -28,5 +28,7 @@ export const ERROR_MESSAGES: {
   default: "Ha ocurrido un error al iniciar sesión",
   "Missing password": "Por favor, introduzca una contraseña",
   "Missing email": "Por favor, introduzca un correo electrónico",
-  "User not found": "Debes registrarte para poder iniciar sesión"
+  "User not found": "Debes registrarte para poder iniciar sesión",
+  "The field password must be a valid format.":
+    "Por favor, ingresa una contraseña válida"
 });
