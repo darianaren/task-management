@@ -1,6 +1,8 @@
 # Task Management App
 Este proyecto es una aplicación de gestión de tareas que consta de dos partes principales: Cliente (Frontend) y API (Backend). Ambas se comunican a través de una API RESTful, permitiendo la creación, edición, eliminación, y visualización de tareas, usuarios y etiquetas.
 
+![image](https://github.com/user-attachments/assets/33e5b656-68de-48d0-9ff2-8c472d3e593b)
+
 ## Requisitos ✅
 **Para ambos proyectos**:
 
